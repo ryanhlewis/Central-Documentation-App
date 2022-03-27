@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Central Documentation</string>
+    <string name="redirecturl">centralsdocs://login</string>
+</resources>
