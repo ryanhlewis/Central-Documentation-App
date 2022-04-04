@@ -7,7 +7,13 @@ import androidx.lifecycle.ViewModel
 class GalleryViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is gallery Fragment"
+        value = "Random.Range()"
     }
     val text: LiveData<String> = _text
+
+
+    private val _text2 = MutableLiveData<String>().apply {
+        value = "This is a prototype function page for Random.Range(). Here we will describe the function and have documentation."
+    }
+    val text2: LiveData<String> = _text2
 }

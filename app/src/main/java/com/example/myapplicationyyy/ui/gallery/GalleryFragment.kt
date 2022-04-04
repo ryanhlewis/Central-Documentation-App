@@ -27,10 +27,14 @@ private var _binding: FragmentGalleryBinding? = null
     _binding = FragmentGalleryBinding.inflate(inflater, container, false)
     val root: View = binding.root
 
-    val textView: TextView = binding.textGallery
+    val textView: TextView = binding.textFunctionName
     galleryViewModel.text.observe(viewLifecycleOwner) {
       textView.text = it
     }
+      val textView2: TextView = binding.textFunctionDesc
+      galleryViewModel.text2.observe(viewLifecycleOwner) {
+          textView2.text = it
+      }
     return root
   }
 
