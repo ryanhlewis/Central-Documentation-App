@@ -1,5 +1,4 @@
-package com.example.myapplicationnn
-
+package com.example.myapplicationyyy
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
@@ -8,15 +7,23 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.TextUtils.isEmpty
+import android.text.TextUtils
 import android.util.Log
+import android.view.Menu
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.navigation.NavigationView
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import com.example.myapplicationnn.ui.main.MainFragment
+import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
@@ -28,10 +35,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.*
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,14 +46,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var retrofit : Retrofit
     lateinit var retrofitAPI : GithubAPI
 
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+private lateinit var binding: ActivityNavigationDrawerBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commitNow()
-        }
 
         // Check if user is logged in--
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -64,10 +69,35 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        //        findViewById<TextView>(R.id.message).text = getSavedToken()
+     binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
+     setContentView(binding.root)
 
+        setSupportActionBar(binding.appBarNavigationDrawer.toolbar)
 
+        binding.appBarNavigationDrawer.fab.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+        }
+        val drawerLayout: DrawerLayout = binding.drawerLayout
+        val navView: NavigationView = binding.navView
+        val navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.navigation_drawer, menu)
+        return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     suspend fun getUserInfo(ACCESSTOKEN: String) {
@@ -101,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.IO).launch {
                     res = drawableFromUrl(entity.getAvatar())
                 }
-                Thread.sleep(5000); // 5 Seconds
+                Thread.sleep(2000); // 5 Seconds
                 findViewById<ImageView>(R.id.imageView).setImageDrawable(res)
 
 
@@ -176,7 +206,7 @@ class MainActivity : AppCompatActivity() {
             val uri = intent.data
             if (uri.toString().startsWith("centraldocs://login")) {
                 val tokenCode = uri!!.getQueryParameter("code")
-                if (!isEmpty(tokenCode)) {
+                if (!TextUtils.isEmpty(tokenCode)) {
 
                     var retrofit: Retrofit = Retrofit.Builder()
                         .baseUrl("https://github.com/") // as we are sending data in json format so
@@ -207,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                                 sharedPreferences.edit().putString("access_token", entity.getToken()).commit()
 
                                 // Create network object with login token.
-                               createRetrofit(entity.getToken())
+                                createRetrofit(entity.getToken())
 
                                 Log.e("", retrofit.toString())
 
@@ -217,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                     })
 
                 } else {
-                    Toast.makeText(getApplicationContext(),"Failed to login.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Failed to login.", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -229,18 +259,41 @@ class MainActivity : AppCompatActivity() {
 
 
 class LoginToken {
-        var access_token: String = ""
-        var login : String = ""
-        var avatar_url : String = ""
-        fun getToken(): String {
-            return access_token
-        }
-        fun getLog() : String {
-            return login
-        }
-        fun getAvatar() : String {
-            return avatar_url
-        }
-
+    var access_token: String = ""
+    var login : String = ""
+    var avatar_url : String = ""
+    fun getToken(): String {
+        return access_token
     }
+    fun getLog() : String {
+        return login
+    }
+    fun getAvatar() : String {
+        return avatar_url
+    }
+
+}
+
+interface GithubAPI {
+
+    @FormUrlEncoded
+    @POST("login/oauth/access_token")
+    @Headers("Accept: application/json")
+    fun getAccessToken(
+        @Field("code") code: String,
+        @Field("client_id") clientId: String,
+        @Field("client_secret") clientSecret: String,
+        @Field("state") state: String,
+        @Field("redirect_uri") redirectUrl: String
+    ) : Call<ResponseBody>
+
+    @GET("user")
+    fun getUser(
+        @Header("Authorization") token: String
+    ): Call<ResponseBody>
+
+
+
+}
+
 
