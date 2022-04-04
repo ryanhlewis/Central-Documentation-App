@@ -43,9 +43,7 @@
         android:layout_marginStart="109dp"
         android:layout_marginTop="280dp"
         android:layout_marginEnd="110dp"
-        android:layout_marginBottom="28dp"
         android:text="Login using Github"
-        app:layout_constraintBottom_toTopOf="@+id/text_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
