@@ -53,24 +53,10 @@ private lateinit var binding: ActivityNavigationDrawerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Check if user is logged in--
-        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-
-        if(getSavedToken() == "null") {
-            // User is not logged in. Log them in.
-            val intent = intent
-            onHandleAuthIntent(intent)
-            Log.e("", "Not logged in, grabbed login info.")
-
-        } else {
-
-            getSavedToken()?.let { createRetrofit(it) }
-            Log.e("", "Logged in from memory.")
-
-        }
 
      binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
      setContentView(binding.root)
+
 
         setSupportActionBar(binding.appBarNavigationDrawer.toolbar)
 
@@ -87,6 +73,27 @@ private lateinit var binding: ActivityNavigationDrawerBinding
             R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+        // Check github
+
+        // Check if user is logged in--
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+
+        if(getSavedToken() == "null") {
+            // User is not logged in. Log them in.
+            val intent = intent
+            onHandleAuthIntent(intent)
+            Log.e("", "Not logged in, grabbed login info.")
+
+        } else {
+
+            getSavedToken()?.let { createRetrofit(it) }
+            Log.e("", "Logged in from memory.")
+
+        }
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -195,7 +202,7 @@ private lateinit var binding: ActivityNavigationDrawerBinding
     }
 
     // Field from default config.
-    val appId = "com.example.myapplicationnn"
+    val appId = "com.example.myapplicationyyy"
     val clientId = "60a1586f001e9e2a5be6"
     val clientSecret = "8a5dbfdcbe35eef9d0bac44f54ff44486e767434"
     val redirectUrl = ""

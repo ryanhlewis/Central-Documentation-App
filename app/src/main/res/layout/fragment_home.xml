@@ -22,13 +22,14 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
 
-
     <TextView
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="132dp"
+        android:layout_marginEnd="160dp"
         android:text="MainFragment"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,9 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="109dp"
         android:layout_marginTop="280dp"
-        android:layout_marginBottom="28dp"
         android:text="Login using Github"
-        app:layout_constraintBottom_toTopOf="@+id/message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,11 +49,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="141dp"
-        android:layout_marginTop="64dp"
         android:layout_marginBottom="163dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message"
         tools:src="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
