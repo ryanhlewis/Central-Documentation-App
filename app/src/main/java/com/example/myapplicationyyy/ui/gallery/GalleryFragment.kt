@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplicationyyy.databinding.FragmentGalleryBinding
+import io.noties.markwon.Markwon
 
 class GalleryFragment : Fragment() {
 
@@ -27,10 +28,18 @@ private var _binding: FragmentGalleryBinding? = null
     _binding = FragmentGalleryBinding.inflate(inflater, container, false)
     val root: View = binding.root
 
-    val textView: TextView = binding.textFunctionName
-    galleryViewModel.text.observe(viewLifecycleOwner) {
-      textView.text = it
-    }
+
+      val textView: TextView = binding.textFunctionName
+
+      // obtain an instance of Markwon
+      val markwon = Markwon.create(root.context)
+
+      // Now, we can use Markdown. Begin to index and download Markdown.
+
+        // set markdown
+      markwon.setMarkdown(textView, "**Hello there!**");
+
+
       val textView2: TextView = binding.textFunctionDesc
       galleryViewModel.text2.observe(viewLifecycleOwner) {
           textView2.text = it

@@ -3,13 +3,16 @@ package com.example.myapplicationyyy.ui.home
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.myapplicationyyy.MainActivity
 import com.example.myapplicationyyy.R
 import com.example.myapplicationyyy.databinding.FragmentHomeBinding
 
@@ -51,6 +54,7 @@ private var _binding: FragmentHomeBinding? = null
             }
         }
 
+        // Future- move Login Code specifically to this fragment, NOT mainactivity.kt.
 
 
     }
