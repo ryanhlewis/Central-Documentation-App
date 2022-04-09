@@ -10,21 +10,27 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.ActionMenuView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.forEach
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -37,15 +43,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.io.InputStream
+import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import java.net.URL
+
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var sharedPreferences : SharedPreferences
     lateinit var retrofit : Retrofit
     lateinit var retrofitAPI : GithubAPI
-
+    lateinit var githubItems: Collection<GithubItem>
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 private lateinit var binding: ActivityNavigationDrawerBinding
@@ -69,12 +77,17 @@ private lateinit var binding: ActivityNavigationDrawerBinding
         val navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+
         appBarConfiguration = AppBarConfiguration(setOf(
             R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        //drawerLayout.open()
+        // Great code to add API dynamically--
+        //navView.menu.add("hey")
 
+        //Log.e("", navView.addView(findViewById(R.id.groupItems)).toString())
         // Check github
 
         // Check if user is logged in--
@@ -91,6 +104,7 @@ private lateinit var binding: ActivityNavigationDrawerBinding
             getSavedToken()?.let { createRetrofit(it) }
             Log.e("", "Logged in from memory.")
 
+
         }
 
 
@@ -101,6 +115,8 @@ private lateinit var binding: ActivityNavigationDrawerBinding
         menuInflater.inflate(R.menu.navigation_drawer, menu)
         return true
     }
+
+
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
@@ -143,13 +159,9 @@ private lateinit var binding: ActivityNavigationDrawerBinding
 
 
             }
-
         })
-
-
-
-
     }
+
 
     // Drawable from URL code from https://stackoverflow.com/questions/3375166/android-drawable-images-from-url
     @Throws(IOException::class)
@@ -160,6 +172,95 @@ private lateinit var binding: ActivityNavigationDrawerBinding
         val input: InputStream = connection.getInputStream()
         x = BitmapFactory.decodeStream(input)
         return BitmapDrawable(Resources.getSystem(), x)
+    }
+
+    suspend fun getRepoInfo(ACCESSTOKEN: String) {
+        var call = retrofitAPI.getRepo("token " + ACCESSTOKEN)
+
+        Log.e("TAG", call.toString())
+
+        call.enqueue( object: Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                //handle error here
+                Log.e("TAG", "onFailure: $t")
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                //your raw string response
+                val stringResponse = response.body()?.string()
+                if (stringResponse != null) {
+                    Log.e("",stringResponse)
+                }
+                Log.e("", response.raw().toString())
+
+                val gson = Gson()
+
+                val collectionType: Type = object : TypeToken<Collection<GithubItem?>?>() {}.type
+                githubItems = gson.fromJson(stringResponse, collectionType)
+
+
+                for(githubItem in githubItems)
+                    if(githubItem.type == "dir")
+                        binding.navView.menu.add(githubItem.name)
+
+
+                Log.e("",binding.navView.menu.size().toString())
+                binding.navView.menu.forEach {
+                    Log.e("", it.toString())
+                    if(it.toString().equals("C#")) {
+                        it.setIcon(R.drawable.account_circle)
+                        //it.setActionView(R.layout.fragment_home)
+                        //it.collapseActionView()
+                        //it.subMenu.add("Hey")
+                        //it.
+                        it.setOnMenuItemClickListener {
+                            binding.navView.menu.add("Classes")
+                            binding.navView.menu.addSubMenu("Hs")
+                                //it.setEnabled(false)
+                            Log.e("", "clicked")
+                            true
+                        }
+                    }
+                }
+                //Log.e("",binding.navView.menu[0].actionView.toString())
+
+                binding.navView.menu.getItem(6).setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
+                    override fun onMenuItemClick(item: MenuItem?): Boolean {
+                        Log.e("","pressed")
+                        binding.navView.menu.add("SEFSFSEFS")
+                        //binding.navView.menu.clear(); //clear old inflated items.
+                        //binding.navView.inflateMenu(R.menu.activity_navigation_drawer_drawer);
+                        return true
+                    }
+                })
+
+
+                lifecycleScope.launch {
+                    delay(10000L)
+                    binding.navView.invalidate()
+                }
+
+
+/*
+                binding.navView.menu.getItem(6).setOnMenuItemClickListener {
+                    it.setEnabled(false)
+                    binding.navView.menu.add("Classes")
+
+                    @Override
+                    fun onClick(v: View) {
+                        binding.navView.menu.add("Classes")
+
+                        //handle the click here.
+                    }
+
+                    true
+                }*/
+                //binding.navView.menu.getItem(binding.navView.menu.size()-1).subMenu.add("Cool")
+                //binding.navView.menu.getItem(binding.navView.menu.size()-1).subMenu.addSubMenu("Classes")
+
+
+            }
+        })
     }
 
     fun getSavedToken(): String? {
@@ -196,6 +297,7 @@ private lateinit var binding: ActivityNavigationDrawerBinding
 
         CoroutineScope(Dispatchers.IO).launch {
             getUserInfo(ACCESSTOKEN)
+            getRepoInfo(ACCESSTOKEN)
 
         }
 
@@ -281,6 +383,15 @@ class LoginToken {
 
 }
 
+
+class GithubItem {
+    var name : String = ""
+    var type : String = ""
+    override fun toString(): String {
+        return name + " " + type
+    }
+}
+
 interface GithubAPI {
 
     @FormUrlEncoded
@@ -298,6 +409,12 @@ interface GithubAPI {
     fun getUser(
         @Header("Authorization") token: String
     ): Call<ResponseBody>
+
+    @GET("/repos/ryanhlewis/Central-Documentation/contents")
+    @Headers("Accept: application/vnd.github.v3+json")
+    fun getRepo(
+        @Header("Authorization") token: String
+    ) : Call<ResponseBody>
 
 
 
