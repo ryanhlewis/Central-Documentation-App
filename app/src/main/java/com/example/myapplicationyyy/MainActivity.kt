@@ -6,20 +6,23 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.ActionMenuView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -27,6 +30,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
+import com.example.myapplicationyyy.ui.home.HomeViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -36,6 +40,7 @@ import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -66,12 +71,14 @@ private lateinit var binding: ActivityNavigationDrawerBinding
      setContentView(binding.root)
 
 
+
         setSupportActionBar(binding.appBarNavigationDrawer.toolbar)
 
-        binding.appBarNavigationDrawer.fab.setOnClickListener { view ->
+        /*binding.appBarNavigationDrawer.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
-        }
+        }*/
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
@@ -94,12 +101,19 @@ private lateinit var binding: ActivityNavigationDrawerBinding
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
         if(getSavedToken() == "null") {
+            binding.appBarNavigationDrawer.toolbar.isVisible = false
+
+            // Will come here twice, once on first app launch, another time on success intent
+            //startActivity(Intent())
+
+
             // User is not logged in. Log them in.
             val intent = intent
             onHandleAuthIntent(intent)
             Log.e("", "Not logged in, grabbed login info.")
 
         } else {
+            binding.appBarNavigationDrawer.toolbar.isVisible = true
 
             getSavedToken()?.let { createRetrofit(it) }
             Log.e("", "Logged in from memory.")
@@ -146,16 +160,20 @@ private lateinit var binding: ActivityNavigationDrawerBinding
                 val entity: LoginToken =
                     gson.fromJson(stringResponse, LoginToken::class.java)
 
-
-                findViewById<TextView>(R.id.message).text = "You're logged in as " + entity.getLog()
-
                 var res = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_launcher_background, null);
 
                 CoroutineScope(Dispatchers.IO).launch {
                     res = drawableFromUrl(entity.getAvatar())
                 }
-                Thread.sleep(2000); // 5 Seconds
-                findViewById<ImageView>(R.id.imageView).setImageDrawable(res)
+                Thread.sleep(1000); // 5 Seconds
+                findViewById<ImageView>(R.id.imageVieww).setImageDrawable(res)
+
+//                findViewById<TextView>(R.id.message).text = "You're logged in as " + entity.getLog()
+                findViewById<TextView>(R.id.textViewww).text = entity.getLog()
+                findViewById<TextView>(R.id.textVieww).text = entity.getNamee()
+
+                //findViewById<ImageView>(R.id.imageVieww).setImageDrawable(res)
+                //findViewById<ImageView>(R.id.imageView).setImageDrawable(res)
 
 
             }
@@ -201,44 +219,48 @@ private lateinit var binding: ActivityNavigationDrawerBinding
 
                 for(githubItem in githubItems)
                     if(githubItem.type == "dir")
-                        binding.navView.menu.add(githubItem.name)
+                        binding.navView.menu.add(1,1,1,githubItem.name)
 
 
                 Log.e("",binding.navView.menu.size().toString())
                 binding.navView.menu.forEach {
+                    if(it.toString().equals("Settings") || it.toString().equals("Home") || it.toString().equals("ExampleDoc"))
+                        return@forEach
+
                     Log.e("", it.toString())
-                    if(it.toString().equals("C#")) {
-                        it.setIcon(R.drawable.account_circle)
-                        //it.setActionView(R.layout.fragment_home)
-                        //it.collapseActionView()
-                        //it.subMenu.add("Hey")
-                        //it.
-                        it.setOnMenuItemClickListener {
-                            binding.navView.menu.add("Classes")
-                            binding.navView.menu.addSubMenu("Hs")
-                                //it.setEnabled(false)
-                            Log.e("", "clicked")
-                            true
-                        }
-                    }
+
+                    // Recursively go through every language
+
+
                 }
                 //Log.e("",binding.navView.menu[0].actionView.toString())
 
-                binding.navView.menu.getItem(6).setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
+
+                binding.navView.menu.getItem(5).setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
                     override fun onMenuItemClick(item: MenuItem?): Boolean {
                         Log.e("","pressed")
-                        binding.navView.menu.add("SEFSFSEFS")
+                        if(binding.navView.menu.size() > 6) {
+                            var size = binding.navView.menu.size()-1
+                            for (x in 6..size) {
+                                if (binding.navView.menu.getItem(x).isVisible)
+                                    binding.navView.post {
+                                        binding.navView.menu.getItem(x).setVisible(false)
+                                    }
+                                else
+                                    binding.navView.post {
+                                        binding.navView.menu.getItem(x).setVisible(true)
+                                    }
+                                //binding.navView.menu.
+                            }
+                        } else {
+                            binding.navView.post { binding.navView.menu.add("└  Classes") }
+                            binding.navView.post { binding.navView.menu.add("   └  Any.kt") }
+                        }
                         //binding.navView.menu.clear(); //clear old inflated items.
                         //binding.navView.inflateMenu(R.menu.activity_navigation_drawer_drawer);
                         return true
                     }
                 })
-
-
-                lifecycleScope.launch {
-                    delay(10000L)
-                    binding.navView.invalidate()
-                }
 
 
 /*
@@ -371,11 +393,15 @@ class LoginToken {
     var access_token: String = ""
     var login : String = ""
     var avatar_url : String = ""
+    var name : String = ""
     fun getToken(): String {
         return access_token
     }
     fun getLog() : String {
         return login
+    }
+    fun getNamee() : String {
+        return name
     }
     fun getAvatar() : String {
         return avatar_url
@@ -416,8 +442,11 @@ interface GithubAPI {
         @Header("Authorization") token: String
     ) : Call<ResponseBody>
 
-
-
 }
 
 
+class Singleton(bindinmg : ActivityNavigationDrawerBinding) {
+    init {
+        bindinmg.navView.menu.add("Added after 10 seconds")
+    }
+}

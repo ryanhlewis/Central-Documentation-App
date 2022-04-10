@@ -5,13 +5,15 @@
       <map>
         <entry key="..\:/Users/PC/AndroidStudioProjects/MyApplicationyyy/app/src/main/res/layout/content_navigation_drawer.xml" value="0.32065217391304346" />
         <entry key="..\:/Users/PC/AndroidStudioProjects/MyApplicationyyy/app/src/main/res/layout/fragment_home.xml" value="0.1037037037037037" />
+        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/drawable/round_bg.xml" value="0.124" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/drawable/rounded_corner.xml" value="0.2415" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/activity_navigation_drawer.xml" value="0.25" />
-        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/app_bar_navigation_drawer.xml" value="0.33" />
-        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/content_navigation_drawer.xml" value="0.12183383991894631" />
+        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/app_bar_navigation_drawer.xml" value="0.25" />
+        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/content_navigation_drawer.xml" value="0.25" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/fragment_gallery.xml" value="0.322463768115942" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/fragment_home.xml" value="0.33" />
-        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/nav_header_navigation_drawer.xml" value="0.12183383991894631" />
+        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/fragment_slideshow.xml" value="0.1884498480243161" />
+        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/nav_header_navigation_drawer.xml" value="0.75" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/menu/activity_navigation_drawer_drawer.xml" value="0.5" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/menu/navigation_drawer.xml" value="0.21481481481481482" />
         <entry key="app/src/main/res/layout/activity_navigation_drawer.xml" value="0.25729166666666664" />

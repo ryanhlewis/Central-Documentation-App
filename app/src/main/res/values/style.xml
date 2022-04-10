@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<resources>
+
+
+    <!-- ShapeableImageView theme. (note that the parent matches the Base App theme) -->
+    <style name="ShapeAppearance.ImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+</resources>
+
