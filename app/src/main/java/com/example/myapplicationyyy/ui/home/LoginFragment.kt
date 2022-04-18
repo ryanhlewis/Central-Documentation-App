@@ -3,22 +3,21 @@ package com.example.myapplicationyyy.ui.home
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.example.myapplicationyyy.MainActivity
 import com.example.myapplicationyyy.R
 import com.example.myapplicationyyy.databinding.FragmentHomeBinding
+import com.example.myapplicationyyy.databinding.FragmentLoginBinding
 
-class HomeFragment : Fragment() {
+class LoginFragment : Fragment() {
 
-private var _binding: FragmentHomeBinding? = null
+private var _binding: FragmentLoginBinding? = null
   // This property is only valid between onCreateView and
   // onDestroyView.
   private val binding get() = _binding!!
@@ -29,9 +28,9 @@ private var _binding: FragmentHomeBinding? = null
     savedInstanceState: Bundle?
   ): View {
     val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this).get(LoginViewModel::class.java)
 
-    _binding = FragmentHomeBinding.inflate(inflater, container, false)
+    _binding = FragmentLoginBinding.inflate(inflater, container, false)
     val root: View = binding.root
 
     //val textView: TextView = binding.textHome
@@ -53,6 +52,22 @@ private var _binding: FragmentHomeBinding? = null
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url.toString())))
             }
         }
+
+        val button2 = binding.button2
+        if (button2 != null) {
+            button2.setOnClickListener {
+
+                view?.findNavController()?.navigate(R.id.nav_home)
+
+
+                var mainactivity : MainActivity
+                mainactivity = (activity as MainActivity?)!!
+                mainactivity.binding.appBarNavigationDrawer.toolbar.isVisible = true
+
+
+            }
+        }
+
 
         // Future- move Login Code specifically to this fragment, NOT mainactivity.kt.
 

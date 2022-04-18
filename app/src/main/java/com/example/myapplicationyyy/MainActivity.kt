@@ -6,33 +6,30 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
-import com.example.myapplicationyyy.ui.home.HomeViewModel
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
@@ -40,7 +37,6 @@ import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,9 +55,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var retrofit : Retrofit
     lateinit var retrofitAPI : GithubAPI
     lateinit var githubItems: Collection<GithubItem>
+    lateinit var navController: NavController
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-private lateinit var binding: ActivityNavigationDrawerBinding
+    public lateinit var binding: ActivityNavigationDrawerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,18 +67,11 @@ private lateinit var binding: ActivityNavigationDrawerBinding
      binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
      setContentView(binding.root)
 
-
-
         setSupportActionBar(binding.appBarNavigationDrawer.toolbar)
-
-        /*binding.appBarNavigationDrawer.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }*/
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
+        navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
@@ -90,34 +80,47 @@ private lateinit var binding: ActivityNavigationDrawerBinding
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+
+        // To auto open and close the nav--
         //drawerLayout.open()
-        // Great code to add API dynamically--
-        //navView.menu.add("hey")
+        //drawerLayout.close()
+
 
         //Log.e("", navView.addView(findViewById(R.id.groupItems)).toString())
         // Check github
 
-        // Check if user is logged in--
+
+        // First, we open the app. We need to check if this is the first open,
+        // and if not, check if the user is already logged in to fetch their info.
+
+        // Grab local preferences
+        // Encrypting the user token is useless, apparently. Shared prefs are usually private.
+        // https://stackoverflow.com/questions/10161266/how-to-securely-store-access-token-and-secret-in-android
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
-        if(getSavedToken() == "null") {
+        // If first time opening the app----
+        if(sharedPreferences.getBoolean("firstTimeOpeningApp", true)) {
             binding.appBarNavigationDrawer.toolbar.isVisible = false
 
-            // Will come here twice, once on first app launch, another time on success intent
-            //startActivity(Intent())
+            navController.navigate(R.id.nav_login)
 
-
-            // User is not logged in. Log them in.
-            val intent = intent
-            onHandleAuthIntent(intent)
-            Log.e("", "Not logged in, grabbed login info.")
+            sharedPreferences.edit().putBoolean("firstTimeOpeningApp", false).commit();
 
         } else {
+            // Otherwise, check if the user is logged in or not for info--
+
             binding.appBarNavigationDrawer.toolbar.isVisible = true
 
-            getSavedToken()?.let { createRetrofit(it) }
-            Log.e("", "Logged in from memory.")
+            if(getSavedToken() != "null") {
+                getSavedToken()?.let { createRetrofit(it) }
+                Log.e("", "Logged in from memory.")
+            } else {
+                // User is not logged in. If the intent contains login info, pass it.
+                val intent = intent
+                onHandleAuthIntent(intent)
+                Log.e("", "Not logged in, grabbed login info.")
 
+            }
 
         }
 
@@ -127,6 +130,15 @@ private lateinit var binding: ActivityNavigationDrawerBinding
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.navigation_drawer, menu)
+
+        // Menu has been created. Do any menu modifications--
+        if(getSavedToken() == "null")
+        findViewById<ImageView>(R.id.imageVieww).setOnClickListener {
+            binding.drawerLayout.close()
+            binding.appBarNavigationDrawer.toolbar.isVisible = false
+            navController.navigate(R.id.nav_login)
+        }
+
         return true
     }
 
@@ -192,9 +204,10 @@ private lateinit var binding: ActivityNavigationDrawerBinding
         return BitmapDrawable(Resources.getSystem(), x)
     }
 
-    suspend fun getRepoInfo(ACCESSTOKEN: String) {
-        var call = retrofitAPI.getRepo("token " + ACCESSTOKEN)
+    suspend fun getRepoInfo(ACCESSTOKEN: String, urlDirectory: String) : Collection<GithubItem?>? {
+        var call = retrofitAPI.getRepo("token " + ACCESSTOKEN, urlDirectory)
 
+        var githubItems : Collection<GithubItem?>? = null
         Log.e("TAG", call.toString())
 
         call.enqueue( object: Callback<ResponseBody> {
@@ -207,7 +220,7 @@ private lateinit var binding: ActivityNavigationDrawerBinding
                 //your raw string response
                 val stringResponse = response.body()?.string()
                 if (stringResponse != null) {
-                    Log.e("",stringResponse)
+                    Log.e("", stringResponse)
                 }
                 Log.e("", response.raw().toString())
 
@@ -215,7 +228,9 @@ private lateinit var binding: ActivityNavigationDrawerBinding
 
                 val collectionType: Type = object : TypeToken<Collection<GithubItem?>?>() {}.type
                 githubItems = gson.fromJson(stringResponse, collectionType)
+            }
 
+                /*
 
                 for(githubItem in githubItems)
                     if(githubItem.type == "dir")
@@ -234,8 +249,8 @@ private lateinit var binding: ActivityNavigationDrawerBinding
 
                 }
                 //Log.e("",binding.navView.menu[0].actionView.toString())
-
-
+*/
+/*
                 binding.navView.menu.getItem(5).setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
                     override fun onMenuItemClick(item: MenuItem?): Boolean {
                         Log.e("","pressed")
@@ -260,7 +275,7 @@ private lateinit var binding: ActivityNavigationDrawerBinding
                         //binding.navView.inflateMenu(R.menu.activity_navigation_drawer_drawer);
                         return true
                     }
-                })
+                }) */
 
 
 /*
@@ -281,8 +296,18 @@ private lateinit var binding: ActivityNavigationDrawerBinding
                 //binding.navView.menu.getItem(binding.navView.menu.size()-1).subMenu.addSubMenu("Classes")
 
 
-            }
+            //}
         })
+        return githubItems
+    }
+
+    // Important-- recursive function to scan and apply directory structure from Github
+    fun getRecursiveDirectory(ACCESSTOKEN: String, urlDirectory : String) {
+
+        //var items = getRepoInfo(ACCESSTOKEN, urlDirectory).await()
+
+        // If it is a folder versus a file.
+
     }
 
     fun getSavedToken(): String? {
@@ -319,7 +344,7 @@ private lateinit var binding: ActivityNavigationDrawerBinding
 
         CoroutineScope(Dispatchers.IO).launch {
             getUserInfo(ACCESSTOKEN)
-            getRepoInfo(ACCESSTOKEN)
+            getRepoInfo(ACCESSTOKEN, "")
 
         }
 
@@ -436,17 +461,11 @@ interface GithubAPI {
         @Header("Authorization") token: String
     ): Call<ResponseBody>
 
-    @GET("/repos/ryanhlewis/Central-Documentation/contents")
+    @GET("/repos/ryanhlewis/Central-Documentation/contents/{directoryInfo}")
     @Headers("Accept: application/vnd.github.v3+json")
     fun getRepo(
-        @Header("Authorization") token: String
-    ) : Call<ResponseBody>
+        @Header("Authorization") token: String,
+        @Path(value = "directoryInfo", encoded = true) directoryInfo : String
+        ) : Call<ResponseBody>
 
-}
-
-
-class Singleton(bindinmg : ActivityNavigationDrawerBinding) {
-    init {
-        bindinmg.navView.menu.add("Added after 10 seconds")
-    }
 }
