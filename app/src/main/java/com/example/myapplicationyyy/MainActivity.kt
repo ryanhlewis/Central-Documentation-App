@@ -34,6 +34,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
@@ -357,6 +358,34 @@ class MainActivity : AppCompatActivity() {
     val redirectUrl = ""
 
 
+    fun logOut() {
+        var miniRetrofit = Retrofit.Builder()
+            .baseUrl("https://api.github.com/") // as we are sending data in json format so
+            .addConverterFactory(GsonConverterFactory.create()) // at last we are building our retrofit builder.
+            //.client(httpClient)
+            .build()
+        var miniRetrofitAPI = miniRetrofit.create(GithubAPI::class.java)
+
+        var call = miniRetrofitAPI.logOut("access_token " + getSavedToken(), clientId)
+        call.enqueue( object: Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                //handle error here
+                Log.e("TAG", "onFailure: $t")
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                //your raw string response
+                val stringResponse = response.body()?.string()
+                if (stringResponse != null) {
+                    Log.e("", stringResponse)
+                }
+                Log.e("", response.raw().toString())
+
+
+            }
+        })
+    }
+
     fun onHandleAuthIntent(intent: Intent?) = GlobalScope.async {
         if (intent != null && intent.data != null) {
             val uri = intent.data
@@ -468,4 +497,20 @@ interface GithubAPI {
         @Path(value = "directoryInfo", encoded = true) directoryInfo : String
         ) : Call<ResponseBody>
 
+    /*
+    @DELETE("/applications/{client_id}/grant")
+    @Headers("Accept: application/vnd.github.v3+json")
+    fun logOut(
+        @Body() access_token: String,
+        @Path(value = "client_id", encoded = true) clientId: String
+    ) : Call<ResponseBody> */
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "/applications/{client_id}/grant", hasBody = true)
+    fun logOut(
+        @Body body: String,
+        @Path(value = "client_id", encoded = true) clientId: String
+    ): Call<ResponseBody>
+
 }
+

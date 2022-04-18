@@ -1,5 +1,17 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <PreferenceCategory
+        android:id="@+id/logoutMenu"
+        android:visibility="invisible"
+        app:title="Logout">
+
+        <EditTextPreference
+            app:key="logout"
+            app:title="Logout from Github"
+            app:useSimpleSummaryProvider="false" />
+
+    </PreferenceCategory>
     <PreferenceCategory app:title="@string/messages_header">
 
         <EditTextPreference
