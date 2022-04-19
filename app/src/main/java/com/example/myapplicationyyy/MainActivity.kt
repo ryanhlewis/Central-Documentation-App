@@ -1,4 +1,5 @@
 package com.example.myapplicationyyy
+
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
@@ -16,8 +17,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -38,6 +41,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
 import java.io.InputStream
 import java.lang.reflect.Type
@@ -235,74 +239,6 @@ class MainActivity : AppCompatActivity() {
                 blockingQueue.add(githubItems)
 
             }
-
-                /*
-
-                for(githubItem in githubItems)
-                    if(githubItem.type == "dir")
-                        binding.navView.menu.add(1,1,1,githubItem.name)
-
-
-                Log.e("",binding.navView.menu.size().toString())
-                binding.navView.menu.forEach {
-                    if(it.toString().equals("Settings") || it.toString().equals("Home") || it.toString().equals("ExampleDoc"))
-                        return@forEach
-
-                    Log.e("", it.toString())
-
-                    // Recursively go through every language
-
-
-                }
-                //Log.e("",binding.navView.menu[0].actionView.toString())
-*/
-/*
-                binding.navView.menu.getItem(5).setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
-                    override fun onMenuItemClick(item: MenuItem?): Boolean {
-                        Log.e("","pressed")
-                        if(binding.navView.menu.size() > 6) {
-                            var size = binding.navView.menu.size()-1
-                            for (x in 6..size) {
-                                if (binding.navView.menu.getItem(x).isVisible)
-                                    binding.navView.post {
-                                        binding.navView.menu.getItem(x).setVisible(false)
-                                    }
-                                else
-                                    binding.navView.post {
-                                        binding.navView.menu.getItem(x).setVisible(true)
-                                    }
-                                //binding.navView.menu.
-                            }
-                        } else {
-                            binding.navView.post { binding.navView.menu.add("└  Classes") }
-                            binding.navView.post { binding.navView.menu.add("   └  Any.kt") }
-                        }
-                        //binding.navView.menu.clear(); //clear old inflated items.
-                        //binding.navView.inflateMenu(R.menu.activity_navigation_drawer_drawer);
-                        return true
-                    }
-                }) */
-
-
-/*
-                binding.navView.menu.getItem(6).setOnMenuItemClickListener {
-                    it.setEnabled(false)
-                    binding.navView.menu.add("Classes")
-
-                    @Override
-                    fun onClick(v: View) {
-                        binding.navView.menu.add("Classes")
-
-                        //handle the click here.
-                    }
-
-                    true
-                }*/
-                //binding.navView.menu.getItem(binding.navView.menu.size()-1).subMenu.add("Cool")
-                //binding.navView.menu.getItem(binding.navView.menu.size()-1).subMenu.addSubMenu("Classes")
-
-
-            //}
         })
         return blockingQueue
     }
@@ -323,13 +259,18 @@ class MainActivity : AppCompatActivity() {
 
                     // Can't edit the view directly from this thread--
                     runOnUiThread {
+                            var name = it.name
+                            var potentialURL = it.download_url
                             var menuItemName = if(spacing == "") it.name else spacing + "└  " + it.name
                             // Start of a subsection
                             var i = menuID + 1
                             var temp = i
                             var off = false
 
-                            var currentMenuItem = binding.navView.menu.add(menuItemName)
+                            var currentMenuItem : MenuItem
+
+                            if(it.type == "dir")
+                            currentMenuItem = binding.navView.menu.add(menuItemName)
                                 .setOnMenuItemClickListener {
 
                                     while (binding.navView.menu.getItem(i).title.indexOf("└") > spacing.length) {
@@ -354,8 +295,25 @@ class MainActivity : AppCompatActivity() {
 
                                     true
                                 }
+                            // Not a directory- custom file Markdown button click
+                            else
+                                currentMenuItem = binding.navView.menu.add(menuItemName)
+                                .setOnMenuItemClickListener {
 
-                        // Disable all non-top levels
+                                    binding.drawerLayout.close()
+
+                                    // Grab the raw text---
+                                    lifecycleScope.launch {
+                                        getRawText(potentialURL, name)
+                                    }
+
+                                    true
+                                }
+
+
+
+
+                                // Disable all non-top levels
                         if(spacing != "") {
                             currentMenuItem.setVisible(false)
                         }
@@ -387,6 +345,45 @@ class MainActivity : AppCompatActivity() {
 
 
         // If it is a folder versus a file.
+
+    }
+
+    suspend fun getRawText(url : String, name : String)  {
+
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .baseUrl("https://raw.githubusercontent.com/")
+            .build()
+
+        var retrofitAPI = retrofit.create(GithubAPI::class.java)
+
+
+        var call = retrofitAPI.getStringResponse(url)
+
+        if (call != null) {
+            call.enqueue( object: Callback<String?> {
+                override fun onFailure(call: Call<String?>, t: Throwable) {
+                    //handle error here
+                    Log.e("TAG", "onFailure: $t")
+                }
+
+                override fun onResponse(call: Call<String?>?, response: Response<String?>) {
+                    if (response.isSuccessful) {
+                        val responseString = response.body()
+                        // Update UI based on Markdown file----
+
+                        runOnUiThread {
+                            var markDownRawText = responseString
+                            val bundle = bundleOf("md" to markDownRawText)
+                            navController.navigate(R.id.nav_gallery, bundle)
+                            binding.appBarNavigationDrawer.toolbar.setTitle(name)
+                        }
+
+                    }
+                }
+
+            })
+        }
 
     }
 
@@ -547,6 +544,7 @@ class LoginToken {
 class GithubItem {
     var name : String = ""
     var type : String = ""
+    var download_url : String = ""
     override fun toString(): String {
         return name + " " + type
     }
@@ -591,6 +589,9 @@ interface GithubAPI {
         @Body body: String,
         @Path(value = "client_id", encoded = true) clientId: String
     ): Call<ResponseBody>
+
+    @GET
+    fun getStringResponse(@Url url: String?): Call<String?>?
 
 }
 

@@ -15,7 +15,7 @@ class GalleryFragment : Fragment() {
 private var _binding: FragmentGalleryBinding? = null
   // This property is only valid between onCreateView and
   // onDestroyView.
-  private val binding get() = _binding!!
+  public val binding get() = _binding!!
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -37,7 +37,7 @@ private var _binding: FragmentGalleryBinding? = null
       // Now, we can use Markdown. Begin to index and download Markdown.
 
         // set markdown
-      markwon.setMarkdown(textView, "**Hello there!**");
+      arguments?.getString("md")?.let { markwon.setMarkdown(textView, it) };
 
 
       val textView2: TextView = binding.textFunctionDesc
