@@ -11,30 +11,25 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
@@ -48,6 +43,8 @@ import java.io.InputStream
 import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.BlockingQueue
 
 
 class MainActivity : AppCompatActivity() {
@@ -60,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     public lateinit var binding: ActivityNavigationDrawerBinding
+    private lateinit var menuItem: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,7 +203,11 @@ class MainActivity : AppCompatActivity() {
         return BitmapDrawable(Resources.getSystem(), x)
     }
 
-    suspend fun getRepoInfo(ACCESSTOKEN: String, urlDirectory: String) : Collection<GithubItem?>? {
+    suspend fun getRepoInfo(ACCESSTOKEN: String, urlDirectory: String) : BlockingQueue<Collection<GithubItem?>?> {
+
+        val blockingQueue: BlockingQueue<Collection<GithubItem?>?> = ArrayBlockingQueue(1)
+
+
         var call = retrofitAPI.getRepo("token " + ACCESSTOKEN, urlDirectory)
 
         var githubItems : Collection<GithubItem?>? = null
@@ -229,6 +231,9 @@ class MainActivity : AppCompatActivity() {
 
                 val collectionType: Type = object : TypeToken<Collection<GithubItem?>?>() {}.type
                 githubItems = gson.fromJson(stringResponse, collectionType)
+
+                blockingQueue.add(githubItems)
+
             }
 
                 /*
@@ -299,13 +304,87 @@ class MainActivity : AppCompatActivity() {
 
             //}
         })
-        return githubItems
+        return blockingQueue
     }
 
-    // Important-- recursive function to scan and apply directory structure from Github
-    fun getRecursiveDirectory(ACCESSTOKEN: String, urlDirectory : String) {
+    // Offset by the number of initial menu buttons
+    var menuID = 2
 
-        //var items = getRepoInfo(ACCESSTOKEN, urlDirectory).await()
+    // Important-- recursive function to scan and apply directory structure from Github
+    suspend fun getRecursiveDirectory(ACCESSTOKEN: String, urlDirectory : String, spacing : String) {
+
+        val result: BlockingQueue<Collection<GithubItem?>?> = getRepoInfo(ACCESSTOKEN, urlDirectory)
+        val items = result.take() // this will block your thread
+
+        if (items != null) {
+            items.forEach {
+                if (it != null) {
+                    menuID++
+
+                    // Can't edit the view directly from this thread--
+                    runOnUiThread {
+                            var menuItemName = if(spacing == "") it.name else spacing + "└  " + it.name
+                            // Start of a subsection
+                            var i = menuID + 1
+                            var temp = i
+                            var off = false
+
+                            var currentMenuItem = binding.navView.menu.add(menuItemName)
+                                .setOnMenuItemClickListener {
+
+                                    while (binding.navView.menu.getItem(i).title.indexOf("└") > spacing.length) {
+                                        var nextItem = binding.navView.menu.getItem(i)
+                                        binding.navView.post {
+                                            // When closed, do NOT open subcontainers.
+                                            var bool = if(spacing == "")
+                                                spacing.length + 3 >= nextItem.title.indexOf("└")
+                                             else
+                                                it.title.indexOf("└") + spacing.length >= nextItem.title.indexOf("└")
+
+                                            if(!off || bool )
+                                            nextItem.setVisible(off)
+                                        }
+                                        // Handle the out-of-bounds error, go to next menuitem
+                                        if(++i == binding.navView.menu.size()) {
+                                            i = temp
+                                            break }
+                                    }
+                                    i = temp
+                                    off = !off
+
+                                    true
+                                }
+
+                        // Disable all non-top levels
+                        if(spacing != "") {
+                            currentMenuItem.setVisible(false)
+                        }
+
+                    }
+
+
+                    if(it.type == "dir") {
+                        //Recursive call--
+                        getRecursiveDirectory(
+                            ACCESSTOKEN,
+                            urlDirectory + it.name + "/",
+                            spacing + "   "
+                        )
+                    }
+                    else {
+                        // File level hit- this is a Markdown file.
+                        Log.e("", it.name)
+
+                    }
+
+
+                }
+
+            }
+        }
+
+        Log.e("",items.toString())
+
 
         // If it is a folder versus a file.
 
@@ -345,7 +424,8 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             getUserInfo(ACCESSTOKEN)
-            getRepoInfo(ACCESSTOKEN, "")
+            //getRepoInfo(ACCESSTOKEN, "")
+            getRecursiveDirectory(ACCESSTOKEN,"", "")
 
         }
 
