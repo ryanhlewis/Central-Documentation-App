@@ -236,8 +236,12 @@ class MainActivity : AppCompatActivity() {
 
         val blockingQueue: BlockingQueue<Collection<GithubItem?>?> = ArrayBlockingQueue(1)
 
+        var call : Call<ResponseBody>
+        if(ACCESSTOKEN != "")
+        call = retrofitAPI.getRepo("token " + ACCESSTOKEN, urlDirectory)
+        else
+            call = retrofitAPI.getRepoNotLoggedIn( urlDirectory)
 
-        var call = retrofitAPI.getRepo(/*"token " + ACCESSTOKEN,*/ urlDirectory)
 
         var githubItems : Collection<GithubItem?>? = null
         Log.e("TAG", call.toString())
@@ -599,7 +603,7 @@ class MainActivity : AppCompatActivity() {
                         // Create fork-
 
                             Log.e("", "User does not have repo. Forking!")
-                        createFork()
+                        createFork(gitItem,editedText)
                     } else if(response.code() == 200) {
                         // Push changes to current fork
                         Log.e("", "User has repo. Pushing to theirs!")
@@ -617,7 +621,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun createFork() {
+    fun createFork(gitItem: GithubItem,editedText: String) {
 
         runOnUiThread {
 
@@ -635,11 +639,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     //your raw string response
 
-                    // Github will successfully return with either 404 or 200
-                    if (response.code() == 404) {
-                        // Create fork-
-
-                    }
+                    sendPullRequest(editedText, "",gitItem)
 
                     Log.e("TAG", "onSuccess " + response.raw())
                 }
@@ -908,7 +908,7 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread {
 
-            var commit = pullReq("Edited " + gitItem.name,"Edited using Central Documentation App!","main","main")
+            var commit = pullReq("Edited " + gitItem.name,"Edited using Central Documentation App!",entity.getLog() + ":main","main")
 
             val gson = Gson()
             var json : String = gson.toJson(commit, pullReq::class.java)
@@ -1013,9 +1013,16 @@ interface GithubAPI {
     @GET("/repos/ryanhlewis/Central-Documentation/contents/{directoryInfo}")
     @Headers("Accept: application/vnd.github.v3+json")
     fun getRepo(
-        //@Header("Authorization") token: String,
+        @Header("Authorization") token: String,
         @Path(value = "directoryInfo", encoded = true) directoryInfo : String
         ) : Call<ResponseBody>
+
+    @GET("/repos/ryanhlewis/Central-Documentation/contents/{directoryInfo}")
+    @Headers("Accept: application/vnd.github.v3+json")
+    fun getRepoNotLoggedIn(
+        @Path(value = "directoryInfo", encoded = true) directoryInfo : String
+    ) : Call<ResponseBody>
+
 
     @GET("/repos/{user}/Central-Documentation")
     @Headers("Accept: application/vnd.github.v3+json")
@@ -1024,7 +1031,7 @@ interface GithubAPI {
         @Path(value = "user", encoded = true) user : String
     ) : Call<ResponseBody>
 
-    @POST("/repos/ryanhlewis/Central-Documentation/forks/")
+    @POST("/repos/ryanhlewis/Central-Documentation/forks")
     @Headers("Accept: application/vnd.github.v3+json")
     fun forkCentralDocumentation(
         @Header("Authorization") token: String
