@@ -91,7 +91,7 @@ private var _binding: FragmentLoginBinding? = null
             .appendPath("authorize")
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("redirect_uri", redirectUrl)
-            .appendQueryParameter("scope", "public_repo")
+            .appendQueryParameter("scope", "repo")
             .appendQueryParameter("state", appId)
             .build()
 

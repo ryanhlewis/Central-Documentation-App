@@ -3,11 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
+    <!-- Uncomment, compile, and recomment the code below
+    if Android Studio starts to not recognize any toolbars or any nav code. -->
+
+    <!--
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
-
+        android:orderInCategory="105"
+        app:showAsAction="never" /> -->
 
 
 </menu>
