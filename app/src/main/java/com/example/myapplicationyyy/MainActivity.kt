@@ -565,7 +565,7 @@ class MainActivity : AppCompatActivity() {
                     applicationContext,
                     "You must login first to upload edits.",
                     Toast.LENGTH_SHORT
-                )
+                ).show()
             }
             Log.e("", "Not logged in.")
             return
@@ -577,9 +577,10 @@ class MainActivity : AppCompatActivity() {
                     applicationContext,
                     "You must make changes first!",
                     Toast.LENGTH_SHORT
-                )
+                ).show()
+                Log.e("", "Did not change text.")
+
             }
-            Log.e("", "Did not change text.")
             return
         }
 
