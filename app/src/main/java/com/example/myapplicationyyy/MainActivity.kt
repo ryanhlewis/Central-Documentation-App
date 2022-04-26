@@ -28,7 +28,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.versionedparcelable.VersionedParcelize
+import com.example.myapplicationyyy.adapter.ItemAdapter
+import com.example.myapplicationyyy.data.Datasource
 import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
@@ -148,6 +151,12 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+        /* THIS IS FOR THE RECYCLER VIEW; DIDN'T KNOW WHERE TO PUT IT
+        val myDataset = Datasource().loadTopics()
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.adapter = ItemAdapter(this, myDataset)
+        recyclerView.setHasFixedSize(true)
+         */
 
 
     }
