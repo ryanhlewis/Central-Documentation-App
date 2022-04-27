@@ -1,16 +1,16 @@
-package com.example.myapplicationyyy.adapter
+package com.centraldocs.centraldocs.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplicationyyy.R
-import com.example.myapplicationyyy.model.Topic
+import centraldocs.centraldocs.R
+import com.centraldocs.centraldocs.model.Topic
+import com.centraldocs.centraldocs.ui.home.HomeFragment
 
-class ItemAdapter(private val context: Context,
+class ItemAdapter(private val context: HomeFragment,
                   private val dataset: List<Topic>): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
 

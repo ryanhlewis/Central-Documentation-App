@@ -1,4 +1,4 @@
-package com.example.myapplicationyyy.adapter
+package com.centraldocs.centraldocs.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplicationyyy.R
-import com.example.myapplicationyyy.model.Subtopic
+import centraldocs.centraldocs.R
+import com.centraldocs.centraldocs.model.Subtopic
+import com.centraldocs.centraldocs.ui.home.HomeFragment
 
-class SubAdapter(private val context: Context,
+class SubAdapter(private val context: HomeFragment,
                  private val dataset: List<Subtopic>): RecyclerView.Adapter<SubAdapter.SubItemViewHolder>(){
 
     class SubItemViewHolder(private val view: View): RecyclerView.ViewHolder(view){

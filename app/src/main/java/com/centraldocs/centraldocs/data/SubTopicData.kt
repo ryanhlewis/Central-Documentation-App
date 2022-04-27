@@ -1,7 +1,7 @@
-package com.example.myapplicationyyy.data
+package com.centraldocs.centraldocs.data
 
-import com.example.myapplicationyyy.R
-import com.example.myapplicationyyy.model.Subtopic
+import centraldocs.centraldocs.R
+import com.centraldocs.centraldocs.model.Subtopic
 
 class SubTopicData() {
     private var topic: String = ""

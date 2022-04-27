@@ -1,4 +1,4 @@
-package com.example.myapplicationyyy.model
+package com.centraldocs.centraldocs.model
 
 import androidx.annotation.StringRes
 

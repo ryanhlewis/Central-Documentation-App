@@ -1,7 +1,7 @@
-package com.example.myapplicationyyy.data
+package com.centraldocs.centraldocs.data
 
-import com.example.myapplicationyyy.R
-import com.example.myapplicationyyy.model.Topic
+import centraldocs.centraldocs.R
+import com.centraldocs.centraldocs.model.Topic
 
 class Datasource {
     fun loadTopics(): List<Topic>{

@@ -1,4 +1,4 @@
-package com.example.myapplicationyyy
+package com.centraldocs.centraldocs
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -30,9 +30,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.versionedparcelable.VersionedParcelize
-import com.example.myapplicationyyy.adapter.ItemAdapter
-import com.example.myapplicationyyy.data.Datasource
-import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
+import centraldocs.centraldocs.R
+import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
+import com.centraldocs.centraldocs.adapter.ItemAdapter
+import com.centraldocs.centraldocs.data.Datasource
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -151,12 +152,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        /* THIS IS FOR THE RECYCLER VIEW; DIDN'T KNOW WHERE TO PUT IT
-        val myDataset = Datasource().loadTopics()
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
-        recyclerView.adapter = ItemAdapter(this, myDataset)
-        recyclerView.setHasFixedSize(true)
-         */
 
 
     }
@@ -167,7 +162,7 @@ class MainActivity : AppCompatActivity() {
 
         // Menu has been created. Do any menu modifications--
         if(getSavedToken() == "null")
-        findViewById<ImageView>(R.id.imageVieww).setOnClickListener {
+        findViewById<ImageView>(R.id.imageVieww)?.setOnClickListener {
             binding.drawerLayout.close()
             binding.appBarNavigationDrawer.toolbar.isVisible = false
             navController.navigate(R.id.nav_login)
@@ -266,10 +261,15 @@ class MainActivity : AppCompatActivity() {
                 val stringResponse = response.body()?.string()
                 if (stringResponse != null) {
                     Log.e("", stringResponse)
+                } else {
+                    Log.e("Error", "errored out")
+                    return
                 }
                 Log.e("", response.raw().toString())
 
                 val gson = Gson()
+
+                // Make sure to catch errors ----
 
                 val collectionType: Type = object : TypeToken<Collection<GithubItem?>?>() {}.type
                 githubItems = gson.fromJson(stringResponse, collectionType)
@@ -341,18 +341,24 @@ class MainActivity : AppCompatActivity() {
                                     true
                                 }
                             // Not a directory- custom file Markdown button click
-                            else
+                            else {
+
+                                // Ignore hidden files, README, licenses, etc.
+                                    if(menuItemName == "README.md" || menuItemName[0] == '.')
+                                        return@runOnUiThread
+
                                 currentMenuItem = binding.navView.menu.add(menuItemName)
-                                .setOnMenuItemClickListener {
-                                    binding.drawerLayout.close()
+                                    .setOnMenuItemClickListener {
+                                        binding.drawerLayout.close()
 
-                                    // Grab the raw text---
-                                    lifecycleScope.launch {
-                                        getRawText(potentialURL, name, it, gitItem)
+                                        // Grab the raw text---
+                                        lifecycleScope.launch {
+                                            getRawText(potentialURL, name, it, gitItem)
+                                        }
+
+                                        true
                                     }
-
-                                    true
-                                }
+                            }
 
 
 

@@ -14,11 +14,15 @@
     </PreferenceCategory>
     <PreferenceCategory app:title="Display">
 
-
+<!--   Switch Preference
         <SwitchPreference
             android:defaultValue="false"
             android:key="switch_preference_1"
             android:title="Dark Mode" />
+        -->
+
+        <ListPreference app:defaultValue="Light" app:entries="@array/themes_array" app:entryValues="@array/themes_array" app:key="theme_color" app:title="Theme" app:useSimpleSummaryProvider="true"/>
+
 
 
     </PreferenceCategory>
