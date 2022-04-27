@@ -12,19 +12,13 @@
             app:useSimpleSummaryProvider="false" />
 
     </PreferenceCategory>
+
     <PreferenceCategory app:title="Display">
 
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="switch_preference_1"
-            android:title="Dark Mode" />
-
-
     </PreferenceCategory>
-
-    <PreferenceCategory app:title="Another Settings Category">
-
-    </PreferenceCategory>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="switch_preference_1"
+        android:title="Dark Mode" />
 
 </PreferenceScreen>
