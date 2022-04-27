@@ -1,21 +1,12 @@
-package com.example.myapplicationyyy.ui.home
+package com.centraldocs.centraldocs.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.core.view.get
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.example.myapplicationyyy.MainActivity
-import com.example.myapplicationyyy.R
-import com.example.myapplicationyyy.databinding.FragmentHomeBinding
+import centraldocs.centraldocs.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 

@@ -1,4 +1,4 @@
-package com.example.myapplicationyyy.ui.slideshow
+package com.centraldocs.centraldocs.ui.slideshow
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.myapplicationyyy.databinding.FragmentSlideshowBinding
+import centraldocs.centraldocs.databinding.FragmentSlideshowBinding
 
 class SlideshowFragment : Fragment() {
 

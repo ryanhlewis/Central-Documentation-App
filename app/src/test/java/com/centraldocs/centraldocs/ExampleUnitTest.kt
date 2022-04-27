@@ -1,4 +1,4 @@
-package com.example.myapplicationyyy
+package com.centraldocs.centraldocs
 
 import org.junit.Test
 

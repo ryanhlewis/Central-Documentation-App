@@ -5,7 +5,7 @@
     android:id="@+id/home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context="com.centraldocs.centraldocs.ui.home.HomeFragment">
 
 
     <TextView
@@ -14,9 +14,11 @@
         android:layout_height="52dp"
         android:layout_marginStart="120dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="6dp"
         android:text="Peer-edited, open, and understandable documentation for everyone."
         android:textAlignment="textStart"
         android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -26,10 +28,12 @@
         android:layout_height="40dp"
         android:layout_marginStart="108dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/fredoka_one"
         android:text="Central Documentation"
         android:textAlignment="center"
         android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +44,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/logo"
+        app:layout_constraintEnd_toStartOf="@+id/textView4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,4 +1,4 @@
-package com.example.myapplicationyyy.ui.slideshow
+package com.centraldocs.centraldocs.ui.slideshow
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

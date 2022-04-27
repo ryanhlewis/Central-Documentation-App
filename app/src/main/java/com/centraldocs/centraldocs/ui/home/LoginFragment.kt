@@ -1,4 +1,4 @@
-package com.example.myapplicationyyy.ui.home
+package com.centraldocs.centraldocs.ui.home
 
 import android.content.Intent
 import android.net.Uri
@@ -10,10 +10,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.example.myapplicationyyy.MainActivity
-import com.example.myapplicationyyy.R
-import com.example.myapplicationyyy.databinding.FragmentHomeBinding
-import com.example.myapplicationyyy.databinding.FragmentLoginBinding
+import centraldocs.centraldocs.R
+import centraldocs.centraldocs.databinding.FragmentLoginBinding
+import com.centraldocs.centraldocs.MainActivity
 
 class LoginFragment : Fragment() {
 
@@ -86,7 +85,7 @@ private var _binding: FragmentLoginBinding? = null
     }
 
     // Field from default config.
-    val appId = "com.example.myapplicationyyy"
+    val appId = "com.centraldocs.centraldocs"
     // Field from default config.
     val clientId = "60a1586f001e9e2a5be6"
     // Field from default config.

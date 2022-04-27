@@ -1,13 +1,10 @@
-package com.example.myapplicationyyy
+package com.centraldocs.centraldocs
 
-import android.R.attr.button
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.preference.EditTextPreference
-import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-
+import centraldocs.centraldocs.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -16,7 +13,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
         var sharedPreferences =
-            context?.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE);
+            context?.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE)
 
         val ACCESSTOKEN : String? = sharedPreferences?.getString("access_token","null")
 

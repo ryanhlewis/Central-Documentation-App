@@ -1,6 +1,5 @@
-package com.example.myapplicationyyy.ui.gallery
+package com.centraldocs.centraldocs.ui.gallery
 
-import android.R
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
@@ -12,10 +11,11 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.myapplicationyyy.GithubItem
-import com.example.myapplicationyyy.MainActivity
-import com.example.myapplicationyyy.databinding.FragmentGalleryBinding
+import centraldocs.centraldocs.databinding.FragmentGalleryBinding
+import com.centraldocs.centraldocs.GithubItem
+import com.centraldocs.centraldocs.MainActivity
 import io.noties.markwon.Markwon
+import io.noties.markwon.image.ImagesPlugin
 
 
 class GalleryFragment : Fragment() {
@@ -28,7 +28,7 @@ private var _binding: FragmentGalleryBinding? = null
 
   // This property is only valid between onCreateView and
   // onDestroyView.
-  public val binding get() = _binding!!
+  val binding get() = _binding!!
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -45,7 +45,11 @@ private var _binding: FragmentGalleryBinding? = null
       val textView: TextView = binding.textFunctionName
 
       // obtain an instance of Markwon
-      val markwon = Markwon.create(root.context)
+      //val markwon = Markwon.create(root.context)
+
+      val markwon = Markwon.builder(root.context)
+          .usePlugin(ImagesPlugin.create())
+          .build()
 
       var originalText = ""
 
@@ -67,7 +71,7 @@ private var _binding: FragmentGalleryBinding? = null
 
           originalText = it
 
-      };
+      }
 
       var gitItem: GithubItem = GithubItem()
 
