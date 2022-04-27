@@ -11,11 +11,18 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
 import centraldocs.centraldocs.databinding.FragmentGalleryBinding
 import com.centraldocs.centraldocs.GithubItem
 import com.centraldocs.centraldocs.MainActivity
 import io.noties.markwon.Markwon
 import io.noties.markwon.image.ImagesPlugin
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.w3c.dom.DOMStringList
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.BlockingQueue
 
 
 class GalleryFragment : Fragment() {
@@ -25,6 +32,12 @@ private var _binding: FragmentGalleryBinding? = null
     lateinit var sendButton : View
     lateinit var viewButton : View
     lateinit var editButton : View
+
+
+    lateinit var textView : TextView
+    lateinit var markwon : Markwon
+    lateinit var originalText : String
+    lateinit var gitItem : GithubItem
 
   // This property is only valid between onCreateView and
   // onDestroyView.
@@ -42,16 +55,16 @@ private var _binding: FragmentGalleryBinding? = null
     val root: View = binding.root
 
 
-      val textView: TextView = binding.textFunctionName
+      textView = binding.textFunctionName
 
       // obtain an instance of Markwon
       //val markwon = Markwon.create(root.context)
 
-      val markwon = Markwon.builder(root.context)
+      markwon = Markwon.builder(root.context)
           .usePlugin(ImagesPlugin.create())
           .build()
 
-      var originalText = ""
+      originalText = ""
 
       // Disable the editText
       binding.editText.isVisible = false
@@ -73,7 +86,7 @@ private var _binding: FragmentGalleryBinding? = null
 
       }
 
-      var gitItem: GithubItem = GithubItem()
+      gitItem  = GithubItem()
 
       if(arguments?.get("gitItem") != null) {
           gitItem = arguments?.get("gitItem") as GithubItem
@@ -82,54 +95,81 @@ private var _binding: FragmentGalleryBinding? = null
 
       // Attach the bindings for the buttons,  0 -> edit button, 1 -> view button
 
-      var mainactivity : MainActivity
-      mainactivity = (activity as MainActivity?)!!
-
-      sendButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(0)
-      editButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(1)
-      viewButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(2)
-
-      // Disable view for view button when not editing
-     viewButton.isVisible = false
-      editButton.isVisible = true
-      sendButton.isVisible = true
-
-      editButton.setOnClickListener{
-
-          textView.isVisible = false
-          binding.editText.isVisible = true
-          viewButton.isVisible = true
-          editButton.isVisible = false
-
-          true
-      }
-
-      viewButton.setOnClickListener{
-
-          markwon.setMarkdown(textView, binding.editText.text.toString())
-          binding.editText.isVisible = false
-          textView.isVisible = true
-          editButton.isVisible = true
-          viewButton.isVisible = false
-
-          true
-      }
-
-      sendButton.setOnClickListener {
-
-
-          mainactivity.sendPullRequest(
-                  binding.editText.text.toString(),
-                  originalText, gitItem
-              )
-
-          true
-      }
-
-
-
       return root
   }
+
+
+    override fun onStart() {
+        super.onStart()
+
+        //if(!galleryViewModel.ranOnce) {
+        GlobalScope.launch {
+
+
+            // DANGEROUS - but functional. Allows Kotlin to make the binding,
+            // by saying the rest of this code is a coroutine so that it can continue
+            // to make the binding.
+            //delay(10)
+
+            //val blockingQueue: BlockingQueue<Collection<ActivityNavigationDrawerBinding?>?> = ArrayBlockingQueue(1)
+            //blockingQueue.add(MainActivity.getMainInstance())
+            //blockingQueue.take()
+
+
+
+
+            var mainactivity: MainActivity
+            mainactivity = MainActivity.getMainInstance()
+
+            mainactivity.runOnUiThread {
+
+                sendButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(0)
+                editButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(1)
+                viewButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(2)
+
+                // Disable view for view button when not editing
+                viewButton.isVisible = false
+                editButton.isVisible = true
+                sendButton.isVisible = true
+
+                editButton.setOnClickListener {
+
+                    textView.isVisible = false
+                    binding.editText.isVisible = true
+                    viewButton.isVisible = true
+                    editButton.isVisible = false
+
+                    true
+                }
+
+                viewButton.setOnClickListener {
+
+                    markwon.setMarkdown(textView, binding.editText.text.toString())
+                    binding.editText.isVisible = false
+                    textView.isVisible = true
+                    editButton.isVisible = true
+                    viewButton.isVisible = false
+
+                    true
+                }
+
+                sendButton.setOnClickListener {
+
+
+                    mainactivity.sendPullRequest(
+                        binding.editText.text.toString(),
+                        originalText, gitItem
+                    )
+
+                    true
+                }
+
+            }
+
+        }
+
+
+    }
 
 
 override fun onDestroyView() {

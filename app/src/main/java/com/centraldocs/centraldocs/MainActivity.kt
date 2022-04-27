@@ -28,12 +28,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.versionedparcelable.VersionedParcelize
 import centraldocs.centraldocs.R
 import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
-import com.centraldocs.centraldocs.adapter.ItemAdapter
-import com.centraldocs.centraldocs.data.Datasource
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -73,12 +69,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var menuItem: MenuItem
     private lateinit var entity: LoginToken
 
+
+    companion object {
+        private lateinit var instance: MainActivity
+
+        @JvmStatic
+        fun getMainInstance() = instance
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
+        instance = this
+
      binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
      setContentView(binding.root)
+
 
         setSupportActionBar(binding.appBarNavigationDrawer.toolbar)
 
@@ -344,8 +351,8 @@ class MainActivity : AppCompatActivity() {
                             else {
 
                                 // Ignore hidden files, README, licenses, etc.
-                                    if(menuItemName == "README.md" || menuItemName[0] == '.')
-                                        return@runOnUiThread
+                                //    if(menuItemName == "README.md" || menuItemName[0] == '.')
+                                //        return@runOnUiThread
 
                                 currentMenuItem = binding.navView.menu.add(menuItemName)
                                     .setOnMenuItemClickListener {
