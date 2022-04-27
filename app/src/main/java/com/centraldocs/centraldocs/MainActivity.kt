@@ -1,4 +1,4 @@
-package com.centraldocs.centraldocs
+package com.example.myapplicationyyy
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -28,8 +28,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import centraldocs.centraldocs.R
-import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
+import androidx.recyclerview.widget.RecyclerView
+import androidx.versionedparcelable.VersionedParcelize
+import com.example.myapplicationyyy.adapter.ItemAdapter
+import com.example.myapplicationyyy.data.Datasource
+import com.example.myapplicationyyy.databinding.ActivityNavigationDrawerBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -65,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    lateinit var binding: ActivityNavigationDrawerBinding
+    public lateinit var binding: ActivityNavigationDrawerBinding
     private lateinit var menuItem: MenuItem
     private lateinit var entity: LoginToken
 
@@ -105,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         // Grab local preferences
         // Encrypting the user token is useless, apparently. Shared prefs are usually private.
         // https://stackoverflow.com/questions/10161266/how-to-securely-store-access-token-and-secret-in-android
-        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
         // If first time opening the app----
         if(sharedPreferences.getBoolean("firstTimeOpeningApp", true)) {
@@ -113,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
             navController.navigate(R.id.nav_login)
 
-            sharedPreferences.edit().putBoolean("firstTimeOpeningApp", false).commit()
+            sharedPreferences.edit().putBoolean("firstTimeOpeningApp", false).commit();
 
         } else {
             // Otherwise, check if the user is logged in or not for info--
@@ -148,6 +151,12 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+        /* THIS IS FOR THE RECYCLER VIEW; DIDN'T KNOW WHERE TO PUT IT
+        val myDataset = Datasource().loadTopics()
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.adapter = ItemAdapter(this, myDataset)
+        recyclerView.setHasFixedSize(true)
+         */
 
 
     }
@@ -200,12 +209,12 @@ class MainActivity : AppCompatActivity() {
                 // Not given
                 entity.access_token = ACCESSTOKEN
 
-                var res = ResourcesCompat.getDrawable(resources, R.drawable.ic_launcher_background, null)
+                var res = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_launcher_background, null);
 
                 CoroutineScope(Dispatchers.IO).launch {
                     res = drawableFromUrl(entity.getAvatar())
                 }
-                Thread.sleep(1000) // 5 Seconds
+                Thread.sleep(1000); // 5 Seconds
                 findViewById<ImageView>(R.id.imageVieww).setImageDrawable(res)
 
 //                findViewById<TextView>(R.id.message).text = "You're logged in as " + entity.getLog()
@@ -227,7 +236,7 @@ class MainActivity : AppCompatActivity() {
         val x: Bitmap
         val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
         connection.connect()
-        val input: InputStream = connection.inputStream
+        val input: InputStream = connection.getInputStream()
         x = BitmapFactory.decodeStream(input)
         return BitmapDrawable(Resources.getSystem(), x)
     }
@@ -319,7 +328,7 @@ class MainActivity : AppCompatActivity() {
                                                 it.title.indexOf("└") + spacing.length >= nextItem.title.indexOf("└")
 
                                             if(!off || bool )
-                                                nextItem.isVisible = off
+                                            nextItem.setVisible(off)
                                         }
                                         // Handle the out-of-bounds error, go to next menuitem
                                         if(++i == binding.navView.menu.size()) {
@@ -350,7 +359,7 @@ class MainActivity : AppCompatActivity() {
 
                                 // Disable all non-top levels
                         if(spacing != "") {
-                            currentMenuItem.isVisible = false
+                            currentMenuItem.setVisible(false)
                         }
 
                     }
@@ -411,7 +420,7 @@ class MainActivity : AppCompatActivity() {
                             var markDownRawText = responseString
                             val bundle = bundleOf("md" to markDownRawText, "gitItem" to gitItem)
                             navController.navigate(R.id.nav_gallery, bundle)
-                            binding.appBarNavigationDrawer.toolbar.title = name
+                            binding.appBarNavigationDrawer.toolbar.setTitle(name)
                            it.isChecked = true
                         }
 
@@ -465,7 +474,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Field from default config.
-    val appId = "com.centraldocs.centraldocs"
+    val appId = "com.example.myapplicationyyy"
     val clientId = "60a1586f001e9e2a5be6"
     val clientSecret = "8a5dbfdcbe35eef9d0bac44f54ff44486e767434"
     val redirectUrl = ""
@@ -542,7 +551,7 @@ class MainActivity : AppCompatActivity() {
                     })
 
                 } else {
-                    Toast.makeText(applicationContext,"Failed to login.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(getApplicationContext(),"Failed to login.", Toast.LENGTH_SHORT).show();
                 }
             }
         }

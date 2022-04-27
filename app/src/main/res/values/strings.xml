@@ -24,4 +24,23 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <string name="c">C#</string>
+    <string name="classes">CLASSES</string>
+    <string name="c_random">\tRANDOM</string>
+    <string name="c_next_md">\t\tNext.md</string>
+    <string name="objects">\t\tObject.md</string>
+    <string name="c_interfaces">INTERFACES</string>
+    <string name="c_generic">\tGENERIC</string>
+    <string name="c_igeneric">\t\tIGeneric.md</string>
+    <string name="c_iobject">\t\tIObject.md</string>
+
+    <string name="java">Java</string>
+
+    <string name="kotlin">Kotlin</string>
+    <string name="k_any">\t\tAny.md</string>
+    <string name="central_documentation">Central Documentation</string>
+    <string name="home_intro">Peer-edited, open, and understandable documentation for everyone.</string>
+    <string name="logo">Logo</string>
+    <string name="logo_image">logo image</string>
 </resources>
