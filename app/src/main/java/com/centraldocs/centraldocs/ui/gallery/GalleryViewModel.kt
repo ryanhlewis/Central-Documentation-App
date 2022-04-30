@@ -15,21 +15,6 @@ class GalleryViewModel : ViewModel() {
     public var ranOnce = false
 
 
-
-
-
-
-
-
 }
 
 
-class GalleryViewModelFactory() :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {
-            return GalleryViewModel() as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}

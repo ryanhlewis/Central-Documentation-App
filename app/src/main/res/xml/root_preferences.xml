@@ -6,7 +6,7 @@
         android:visibility="invisible"
         app:title="Logout">
 
-        <EditTextPreference
+        <Preference
             app:key="logout"
             app:title="Logout from Github"
             app:useSimpleSummaryProvider="false" />

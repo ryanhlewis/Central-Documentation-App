@@ -22,14 +22,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val ACCESSTOKEN : String? = sharedPreferences?.getString("access_token","null")
 
         if(ACCESSTOKEN != "null") {
-            val signaturePreference: EditTextPreference? = findPreference("logout")
+            val signaturePreference: Preference? = findPreference("logout")
             signaturePreference?.isVisible = true
 
             if (signaturePreference != null) {
                 signaturePreference.setOnPreferenceClickListener {
                     var mainactivity : MainActivity
                     mainactivity = (activity as MainActivity?)!!
-                    mainactivity.logOut()
+                    mainactivity.mainViewModel.logOut()
                     true
                 }
             }

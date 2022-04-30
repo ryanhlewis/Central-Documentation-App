@@ -11,18 +11,13 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
 import centraldocs.centraldocs.databinding.FragmentGalleryBinding
 import com.centraldocs.centraldocs.GithubItem
 import com.centraldocs.centraldocs.MainActivity
 import io.noties.markwon.Markwon
 import io.noties.markwon.image.ImagesPlugin
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.w3c.dom.DOMStringList
-import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.BlockingQueue
 
 
 class GalleryFragment : Fragment() {
@@ -156,14 +151,13 @@ private var _binding: FragmentGalleryBinding? = null
                 sendButton.setOnClickListener {
 
 
-                    mainactivity.sendPullRequest(
+                    mainactivity.mainViewModel.sendPullRequest(
                         binding.editText.text.toString(),
                         originalText, gitItem
                     )
 
                     true
                 }
-
             }
 
         }
@@ -172,8 +166,10 @@ private var _binding: FragmentGalleryBinding? = null
     }
 
 
+
 override fun onDestroyView() {
         super.onDestroyView()
+
         _binding = null
 
     viewButton.isVisible = false
