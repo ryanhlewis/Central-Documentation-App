@@ -59,6 +59,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
                 Log.e("",newValue.toString())
 
+                var sharedPreferences =
+                    context?.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE)
+                if (sharedPreferences != null) {
+                    sharedPreferences.edit().putString("theme_color", newValue.toString()).commit()
+                };
+
                 val darkModeString = newValue.toString()
                 val darkModeValues = resources.getStringArray(R.array.themes_array)
                 when (darkModeString) {

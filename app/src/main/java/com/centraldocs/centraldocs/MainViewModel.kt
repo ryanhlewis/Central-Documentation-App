@@ -95,6 +95,15 @@ class MainViewModel : ViewModel() {
         // https://stackoverflow.com/questions/10161266/how-to-securely-store-access-token-and-secret-in-android
         sharedPreferences = mainactivity.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE);
 
+        // Ensure dark mode
+
+        val darkModeString = sharedPreferences.getString("theme_color","System Default")
+        val darkModeValues = mainactivity.resources.getStringArray(R.array.themes_array)
+        when (darkModeString) {
+            darkModeValues[0] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            darkModeValues[1] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            darkModeValues[2] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
 
         // If first time opening the app----
         if(sharedPreferences.getBoolean("firstTimeOpeningApp", true)) {

@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -90,6 +91,8 @@ class MainActivity : AppCompatActivity() {
 
          binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
          setContentView(binding.root)
+
+
 
 
 
