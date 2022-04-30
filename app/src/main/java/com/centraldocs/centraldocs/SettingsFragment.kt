@@ -1,10 +1,10 @@
 package com.centraldocs.centraldocs
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import centraldocs.centraldocs.R
@@ -27,9 +27,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
             if (signaturePreference != null) {
                 signaturePreference.setOnPreferenceClickListener {
+
+                    // Attempted logout using Github API,
+                    // almost always fails.
                     var mainactivity : MainActivity
                     mainactivity = (activity as MainActivity?)!!
-                    mainactivity.mainViewModel.logOut()
+                    //mainactivity.mainViewModel.logOut()
+
+                    // Patched logout, simply deletes token, restarts app.
+                    if (sharedPreferences != null) {
+                        sharedPreferences.edit().putString("access_token", "null").commit()
+                    }
+                    val refresh = Intent(activity, MainActivity::class.java)
+                    startActivity(refresh)
+
                     true
                 }
             }

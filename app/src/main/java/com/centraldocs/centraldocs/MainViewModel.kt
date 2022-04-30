@@ -118,13 +118,14 @@ class MainViewModel : ViewModel() {
 
             binding.appBarNavigationDrawer.toolbar.isVisible = true
 
-            if(getSavedToken() != "null") {
+            if(getSavedToken() != "null" && getSavedToken() != "") {
                 getSavedToken()?.let { createRetrofit(it) }
                 Log.e("", "Logged in from memory.")
             } else {
                 // User is not logged in. If the intent contains login info, pass it.
                     // Create API requests without login---
                     GlobalScope.launch {
+
 
                         retrofit = Retrofit.Builder()
                             .baseUrl("https://api.github.com/") // as we are sending data in json format so
@@ -189,6 +190,8 @@ class MainViewModel : ViewModel() {
                 val stringResponse = response.body()?.string()
                 if (stringResponse != null) {
                     Log.e("",stringResponse)
+                } else {
+                    return
                 }
                 Log.e("", response.raw().toString())
 

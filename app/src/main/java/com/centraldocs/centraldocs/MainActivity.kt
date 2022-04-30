@@ -70,6 +70,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     public lateinit var binding: ActivityNavigationDrawerBinding
+    public lateinit var drawerLayout: DrawerLayout
+
     private lateinit var menuItem: MenuItem
     private lateinit var entity: LoginToken
 
@@ -98,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarNavigationDrawer.toolbar)
 
-        val drawerLayout: DrawerLayout = binding.drawerLayout
+        drawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navController = findNavController(R.id.nav_host_fragment_content_navigation_drawer)
         // Passing each menu ID as a set of Ids because each
@@ -134,11 +136,28 @@ class MainActivity : AppCompatActivity() {
                 delay(100)
                 runOnUiThread {
                     findViewById<ImageView>(R.id.imageVieww).setImageDrawable(it.res)
+                    findViewById<ImageView>(R.id.imageVieww).setOnClickListener {
+                        true
+                    }
                     findViewById<TextView>(R.id.textViewww).text = it.getLog()
                     findViewById<TextView>(R.id.textVieww).text = it.getNamee()
                 }
             }
         })
+        GlobalScope.launch {
+            // Might be called after getting actual pfp above, need to fix--
+            while(findViewById<TextView>(R.id.textViewww) == null)
+            delay(1000)
+            if(findViewById<TextView>(R.id.textVieww).text.equals("Login with Github"))
+                runOnUiThread {
+                    findViewById<ImageView>(R.id.imageVieww).setOnClickListener {
+                        Log.e("", "clicked..")
+                        drawerLayout.close()
+                        navController.navigate(R.id.nav_login)
+                        true
+                    }
+                }
+        }
         // Must observe person image, their respective username, etc.
         // and the tree.
         mainViewModel.getItems().observe(this, Observer {

@@ -51,15 +51,15 @@ private var _binding: FragmentLoginBinding? = null
                 // BUG - This goes to Github and errors out.
 
                 val url = authorizationUrl
-                //startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url.toString())))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url.toString())))
 
                 // FUTURE- Webview in-app like how Github does its
 
                 // Fix- FORCE the web browser.
                 // From https://stackoverflow.com/questions/58800240/android-app-link-open-a-url-from-app-in-browser-without-triggering-app-link?msclkid=dc41876bc0c911ec961bd04171eb055d
-                val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
-                defaultBrowser.data = Uri.parse(url.toString())
-                startActivity(defaultBrowser)
+                //val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+                //defaultBrowser.data = Uri.parse(url.toString())
+                //startActivity(defaultBrowser)
             }
         }
 
