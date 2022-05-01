@@ -58,6 +58,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.BlockingQueue
+import android.app.Activity
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -183,6 +186,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun hideSoftKeyboard() {
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
     var menuID = 0
 
     fun recursiveMakeMenu(it : Container, spacing : String) {
@@ -274,6 +284,7 @@ class MainActivity : AppCompatActivity() {
 
                     if(it.type == "dir") {
                         //Recursive call--
+                            if(index < ref.conts.size)
                                 recursiveMakeMenu(ref.conts[index], spacing + "   ")
                     }
                     else {

@@ -1,12 +1,15 @@
 package com.centraldocs.centraldocs.ui.gallery
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -150,11 +153,22 @@ private var _binding: FragmentGalleryBinding? = null
 
                 sendButton.setOnClickListener {
 
+                    // Put down keyboard
+                    mainactivity.hideSoftKeyboard()
 
+                    // Switch to view mode
+                    markwon.setMarkdown(textView, binding.editText.text.toString())
+                    binding.editText.isVisible = false
+                    textView.isVisible = true
+                    editButton.isVisible = true
+                    viewButton.isVisible = false
+
+                    // Send pull request
                     mainactivity.mainViewModel.sendPullRequest(
                         binding.editText.text.toString(),
                         originalText, gitItem
                     )
+
 
                     true
                 }

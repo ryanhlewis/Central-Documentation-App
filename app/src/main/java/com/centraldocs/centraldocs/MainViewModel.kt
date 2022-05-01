@@ -483,6 +483,7 @@ class MainViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             getUserInfo(ACCESSTOKEN)
             //getRepoInfo(ACCESSTOKEN, "")
+
             getRecursiveDirectory(ACCESSTOKEN,"", "", githubItems)
             items.postValue(githubItems)
 
@@ -620,6 +621,15 @@ class MainViewModel : ViewModel() {
 
             }
             return
+        }
+
+        mainactivity.runOnUiThread {
+            Toast.makeText(
+                mainactivity.applicationContext,
+                "Uploaded changes online.",
+                Toast.LENGTH_SHORT
+            ).show()
+            Log.e("", "Uploaded changes.")
         }
 
 
