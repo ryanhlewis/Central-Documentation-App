@@ -6,7 +6,9 @@
     <PreferenceCategory
         android:id="@+id/logoutMenu"
         android:visibility="invisible"
-        app:title="Logout">
+        app:title="Logout"
+        android:key="logoutcategory"
+        >
 
         <Preference
             app:key="logout"
@@ -24,11 +26,13 @@
         -->
 
         <ListPreference app:defaultValue="Light" app:entries="@array/themes_array" app:entryValues="@array/themes_array" app:key="theme_color" app:title="Theme" app:useSimpleSummaryProvider="true"/>
-        <Preference
-            app:key="changecolor"
-            app:title="Change Theme Color"
-            app:useSimpleSummaryProvider="false" />
 
+        <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
+            android:defaultValue="@color/black"
+            android:key="changecolor"
+            android:summary="Changes the color of all menus"
+            android:title="Change app theme"
+            android:id="@+id/colorMenu"/>
 
 
     </PreferenceCategory>
