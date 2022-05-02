@@ -5,4 +5,9 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="preview_size">16dp</dimen>
+    <dimen name="preview_border_width">16dp</dimen>
+    <dimen name="dialog_preview_size">16dp</dimen>
+    <dimen name="dialog_preview_border_width">16dp</dimen>
+
 </resources>

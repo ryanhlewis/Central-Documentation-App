@@ -43,4 +43,9 @@
     <string name="home_intro">Peer-edited, open, and understandable documentation for everyone.</string>
     <string name="logo">Logo</string>
     <string name="logo_image">logo image</string>
+    <string name="color_palette_preference_dialog_message">Change Theme</string>
+    <string name="color_palette_preference_dialog_title">example1</string>
+    <string name="color_palette_preference_key">example2</string>
+    <string name="color_palette_preference_title">example4</string>
+
 </resources>
