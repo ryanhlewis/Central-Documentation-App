@@ -51,6 +51,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     }
 
+    /*
+    // Sets background color of navigation drawer
+    navView.setBackgroundColor(ContextCompat.getColor(this, R.color.black))
+
+    // Sets background color of app pages
+    drawerLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.black))
+
+    // Sets toolbar color
+    binding.appBarNavigationDrawer.toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.black))
+*/
 
     private fun initializeThemePreference() {
         val themePreference: Preference? = findPreference("theme_color")

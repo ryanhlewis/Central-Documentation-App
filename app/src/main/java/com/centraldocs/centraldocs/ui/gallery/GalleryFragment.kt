@@ -163,6 +163,7 @@ private var _binding: FragmentGalleryBinding? = null
                     editButton.isVisible = true
                     viewButton.isVisible = false
 
+
                     // Send pull request
                     mainactivity.mainViewModel.sendPullRequest(
                         binding.editText.text.toString(),

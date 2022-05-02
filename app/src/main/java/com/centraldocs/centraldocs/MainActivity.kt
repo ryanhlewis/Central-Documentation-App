@@ -61,6 +61,7 @@ import java.util.concurrent.BlockingQueue
 import android.app.Activity
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -96,7 +97,6 @@ class MainActivity : AppCompatActivity() {
 
          binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
          setContentView(binding.root)
-
 
 
 

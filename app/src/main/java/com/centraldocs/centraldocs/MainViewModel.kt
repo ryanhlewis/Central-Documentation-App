@@ -697,6 +697,7 @@ class MainViewModel : ViewModel() {
 
     }
 
+    // https://GITHUB.COM/central-documentation/newfile.txt
     fun getSHA(gitItem: GithubItem,editedText: String) {
 
         mainactivity.runOnUiThread {
