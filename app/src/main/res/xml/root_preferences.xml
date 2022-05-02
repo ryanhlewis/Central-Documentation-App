@@ -1,6 +1,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
     <PreferenceCategory
         android:id="@+id/logoutMenu"
         android:visibility="invisible"
@@ -22,6 +24,10 @@
         -->
 
         <ListPreference app:defaultValue="Light" app:entries="@array/themes_array" app:entryValues="@array/themes_array" app:key="theme_color" app:title="Theme" app:useSimpleSummaryProvider="true"/>
+        <Preference
+            app:key="changecolor"
+            app:title="Change Theme Color"
+            app:useSimpleSummaryProvider="false" />
 
 
 

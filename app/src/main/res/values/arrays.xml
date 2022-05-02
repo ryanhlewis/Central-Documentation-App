@@ -15,5 +15,10 @@
         <item>Dark</item>
         <item>System Default</item>
     </array>
+    <array name="color_palette_preference_summary">
+        <item>item1</item>
+        <item>item2</item>
+        <item>item3</item>
+    </array>
 
 </resources>

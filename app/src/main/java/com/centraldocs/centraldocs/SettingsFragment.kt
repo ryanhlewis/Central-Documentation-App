@@ -9,12 +9,12 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import centraldocs.centraldocs.R
 
-
 class SettingsFragment : PreferenceFragmentCompat() {
 
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
+
 
         var sharedPreferences =
             context?.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE)
@@ -47,9 +47,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         }
 
+        val signaturePreference: Preference? = findPreference("logout")
+        signaturePreference?.isVisible = true
+
+        if (signaturePreference != null) {
+            signaturePreference.setOnPreferenceClickListener {
+                /*    ColorSheet().colorPicker(
+                    colors = colors,
+                    listener = { color ->
+                        // Handle color
+                    })
+                    .show(supportFragmentManager)
+            */
+                true
+            }
+            }
         initializeThemePreference()
 
     }
+
 
 
     private fun initializeThemePreference() {
@@ -89,6 +105,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 return true
             }
         }
+
     }
 
 
