@@ -19,7 +19,7 @@ class SubTopicData() {
                 Subtopic(R.string.classes),
                 Subtopic(R.string.c_random),
                 Subtopic(R.string.c_next_md),
-                Subtopic(R.string.objects),
+                Subtopic(R.string.c_objects),
                 Subtopic(R.string.c_interfaces),
                 Subtopic(R.string.c_generic),
                 Subtopic(R.string.c_igeneric),

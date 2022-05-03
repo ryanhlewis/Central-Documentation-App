@@ -79,7 +79,6 @@ class MainViewModel : ViewModel() {
     var mainactivity = MainActivity.getMainInstance()
 
 
-
     init {
         Log.e("Tarund", "View Model created")
 
@@ -138,14 +137,9 @@ class MainViewModel : ViewModel() {
                         getRecursiveDirectory("", "", "", githubItems)
 
                         items.postValue(githubItems)
-
                     }
-
             }
-
         }
-
-
 
     }
 
@@ -440,13 +434,10 @@ class MainViewModel : ViewModel() {
                             if(it != null)
                             it.isChecked = true
                         }
-
                     }
                 }
-
             })
         }
-
     }
 
     fun getSavedToken(): String? {

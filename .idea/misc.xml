@@ -17,18 +17,27 @@
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/layout/nav_header_navigation_drawer.xml" value="0.33" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/menu/activity_navigation_drawer_drawer.xml" value="0.5" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/menu/navigation_drawer.xml" value="0.5" />
-        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1525" />
-        <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1525" />
         <entry key="..\:/Users/PC/Documents/GitHub/Central-Documentation/app/src/main/res/xml/root_preferences.xml" value="0.33" />
+        <entry key="app/src/main/res/drawable/account_circle.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/color_palette_selector.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/preview_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_navigation_drawer.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/layout/app_bar_navigation_drawer.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/layout/content_navigation_drawer.xml" value="0.25729166666666664" />
+        <entry key="app/src/main/res/layout/fragment_contribute.xml" value="0.18115942028985507" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2033514492753623" />
+        <entry key="app/src/main/res/layout/fragment_initial.xml" value="0.18115942028985507" />
+        <entry key="app/src/main/res/layout/fragment_language.xml" value="0.18115942028985507" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_review.xml" value="0.2523599818132926" />
         <entry key="app/src/main/res/layout/fragment_slideshow.xml" value="0.25729166666666664" />
+        <entry key="app/src/main/res/layout/list_item.xml" value="0.3499685757402061" />
+        <entry key="app/src/main/res/layout/list_topic.xml" value="0.21965579710144928" />
+        <entry key="app/src/main/res/layout/nav_header_navigation_drawer.xml" value="0.21965579710144928" />
         <entry key="app/src/main/res/menu/activity_navigation_drawer_drawer.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/menu/navigation_drawer.xml" value="0.24074074074074073" />
-        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.16983695652173914" />
+        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.1" />
       </map>
     </option>
   </component>

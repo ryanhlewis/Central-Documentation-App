@@ -7,11 +7,13 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import centraldocs.centraldocs.R
+import com.centraldocs.centraldocs.MainActivity
+import com.centraldocs.centraldocs.fragments.LanguageFragment
 import com.centraldocs.centraldocs.model.Topic
 import com.centraldocs.centraldocs.ui.home.HomeFragment
 
-class ItemAdapter(private val context: HomeFragment,
-                  private val dataset: List<Topic>): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class ItemAdapter(private val context: LanguageFragment,
+                  private val dataset: List<Topic>, private val activity: MainActivity): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
 
     class ItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -36,7 +38,7 @@ class ItemAdapter(private val context: HomeFragment,
         holder.textView.setOnClickListener {
             if (!holder.isClicked) {
                 holder.subTopicRecyclerView.isVisible = true
-                holder.subTopicRecyclerView.adapter = SubAdapter(context, item.subtopic_list)
+                holder.subTopicRecyclerView.adapter = SubAdapter(context, item.subtopic_list, activity)
             }
             else {
                 holder.subTopicRecyclerView.isVisible = false

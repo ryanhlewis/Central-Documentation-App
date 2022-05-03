@@ -28,24 +28,38 @@
     <string name="c">C#</string>
     <string name="classes">CLASSES</string>
     <string name="c_random">\tRANDOM</string>
-    <string name="c_next_md">\t\tNext.md</string>
-    <string name="objects">\t\tObject.md</string>
+    <string name="c_next_md">\t\t\tNext.md</string>
+    <string name="c_objects">\t\t\tSystem.Object.md</string>
     <string name="c_interfaces">INTERFACES</string>
     <string name="c_generic">\tGENERIC</string>
-    <string name="c_igeneric">\t\tIGeneric.md</string>
-    <string name="c_iobject">\t\tIObject.md</string>
+    <string name="c_igeneric">\t\t\tIGeneric.md</string>
+    <string name="c_iobject">\t\t\tIObject.md</string>
 
     <string name="java">Java</string>
+    <string name="objects">\t\t\tObject.md</string>
 
     <string name="kotlin">Kotlin</string>
-    <string name="k_any">\t\tAny.md</string>
+    <string name="k_any">\t\t\tAny.md</string>
     <string name="central_documentation">Central Documentation</string>
     <string name="home_intro">Peer-edited, open, and understandable documentation for everyone.</string>
+    <string name="home_motto">For Peers, By Peers</string>
     <string name="logo">Logo</string>
     <string name="logo_image">logo image</string>
     <string name="color_palette_preference_dialog_message">Change Theme</string>
     <string name="color_palette_preference_dialog_title">example1</string>
     <string name="color_palette_preference_key">example2</string>
     <string name="color_palette_preference_title">example4</string>
+
+    <string name="language">Languages</string>
+    <string name="contribute">Contribute</string>
+    <string name="review">Review</string>
+    <string name="team_content">home image</string>
+
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_language">Enter Language</string>
+    <string name="enter_topic">Enter Topic</string>
+    <string name="rating">Rate your experience with Central Documentation</string>
+    <string name="enter_experience_string">How much coding experience do you have?</string>
+
 
 </resources>
