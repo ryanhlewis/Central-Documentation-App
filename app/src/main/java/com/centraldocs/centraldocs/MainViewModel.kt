@@ -408,7 +408,7 @@ class MainViewModel : ViewModel() {
 
     }
 
-    suspend fun getRawText(url : String, name : String, it: MenuItem, gitItem : GithubItem)  {
+    suspend fun getRawText(url : String, name : String, it: MenuItem?, gitItem : GithubItem)  {
         Log.e("","being called")
         val retrofit = Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -437,6 +437,7 @@ class MainViewModel : ViewModel() {
                             val bundle = bundleOf("md" to markDownRawText, "gitItem" to gitItem)
                             navController.navigate(R.id.nav_gallery, bundle)
                             binding.appBarNavigationDrawer.toolbar.setTitle(name)
+                            if(it != null)
                             it.isChecked = true
                         }
 

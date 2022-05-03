@@ -39,7 +39,7 @@
             app:key="textsize"
             app:title="Change text size"
             android:max="12"
-            android:defaultValue="4"
+            android:defaultValue="6"
             />
 
         <Preference

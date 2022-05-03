@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
 
+
         instance = this
 
          binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
@@ -149,17 +150,21 @@ class MainActivity : AppCompatActivity() {
         })
         GlobalScope.launch {
             // Might be called after getting actual pfp above, need to fix--
-            while(findViewById<TextView>(R.id.textViewww) == null)
-            delay(1000)
-            if(findViewById<TextView>(R.id.textVieww).text.equals("Login with Github"))
-                runOnUiThread {
-                    findViewById<ImageView>(R.id.imageVieww).setOnClickListener {
-                        Log.e("", "clicked..")
-                        drawerLayout.close()
-                        navController.navigate(R.id.nav_login)
-                        true
+            try {
+                while (findViewById<TextView>(R.id.textViewww) == null)
+                    delay(1000)
+                if (findViewById<TextView>(R.id.textVieww).text.equals("Login with Github"))
+                    runOnUiThread {
+                        findViewById<ImageView>(R.id.imageVieww).setOnClickListener {
+                            Log.e("", "clicked..")
+                            drawerLayout.close()
+                            navController.navigate(R.id.nav_login)
+                            true
+                        }
                     }
-                }
+            } catch(e : Exception) {
+
+            }
         }
         // Must observe person image, their respective username, etc.
         // and the tree.

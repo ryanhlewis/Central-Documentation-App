@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.core.view.isVisible
@@ -90,6 +91,20 @@ private var _binding: FragmentGalleryBinding? = null
           gitItem = arguments?.get("gitItem") as GithubItem
       }
 
+      // Now text is attached, set sizes--
+      var mainactivity : MainActivity
+      mainactivity = (activity as MainActivity?)!!
+
+      var sharedPreferences =
+          mainactivity.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE)
+      var stylee : Int? = sharedPreferences?.getInt("textsize",12)
+
+      if(stylee != null) {
+          var floatstylee = stylee.toFloat() + 6
+
+          binding.editText.textSize = floatstylee
+          textView.textSize = floatstylee
+      }
 
       // Attach the bindings for the buttons,  0 -> edit button, 1 -> view button
 

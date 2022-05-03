@@ -31,6 +31,28 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val ACCESSTOKEN : String? = sharedPreferences?.getString("access_token","null")
 
+        var number : Int? = sharedPreferences?.getInt("textsize",16)
+        var mainactivity : MainActivity
+        mainactivity = (activity as MainActivity?)!!
+        var stylee = when (number) {
+            6 -> R.style.FontSize6
+            7 -> R.style.FontSize7
+            8 -> R.style.FontSize8
+            9 -> R.style.FontSize9
+            10 -> R.style.FontSize10
+            11 -> R.style.FontSize11
+            12 -> R.style.FontSize12
+            13 -> R.style.FontSize13
+            14 -> R.style.FontSize14
+            15 -> R.style.FontSize15
+            16 -> R.style.FontSize16
+            17 -> R.style.FontSize17
+            18 -> R.style.FontSize18
+            else -> R.style.FontSize12
+        }
+        if(stylee != null)
+            mainactivity.setTheme(stylee)
+
         val signaturePreference: Preference? = findPreference("logout")
         signaturePreference?.isVisible = false
         val catPref: PreferenceCategory? = findPreference("logoutcategory") as PreferenceCategory?
@@ -241,13 +263,43 @@ class SettingsFragment : PreferenceFragmentCompat() {
             override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
                 Log.e("",newValue.toString())
 
+                var mainactivity : MainActivity
+                mainactivity = (activity as MainActivity?)!!
+
+                var number = newValue as Int + 6
+
+
+                Log.e("",number.toString())
+
+                var stylee = when (number) {
+                    6 -> R.style.FontSize6
+                    7 -> R.style.FontSize7
+                    8 -> R.style.FontSize8
+                    9 -> R.style.FontSize9
+                    10 -> R.style.FontSize10
+                    11 -> R.style.FontSize11
+                    12 -> R.style.FontSize12
+                    13 -> R.style.FontSize13
+                    14 -> R.style.FontSize14
+                    15 -> R.style.FontSize15
+                    16 -> R.style.FontSize16
+                    17 -> R.style.FontSize17
+                    18 -> R.style.FontSize18
+                    else -> R.style.FontSize12
+                }
+                Log.e("",stylee.toString())
+
                 var sharedPreferences =
                     context?.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE)
                 if (sharedPreferences != null) {
-                    sharedPreferences.edit().putString("textsize", newValue.toString()).commit()
+                    sharedPreferences.edit().putInt("textsize", number).commit()
                 };
 
-                val themePreference: Preference? = findPreference("text")
+                activity!!.setTheme(stylee)
+
+                activity!!.recreate()
+
+                //val themePreference: Preference? = findPreference("text")
                 //themePreference.title.
 
                 return true
