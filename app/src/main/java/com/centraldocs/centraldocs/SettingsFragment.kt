@@ -2,6 +2,7 @@ package com.centraldocs.centraldocs
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
@@ -63,9 +64,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         }
 
+        val githubPref: Preference? = findPreference("Github")
+        if (githubPref != null) {
+            githubPref.setOnPreferenceClickListener {
+
+                val url = "https://github.com/ryanhlewis/Central-Documentation";
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url.toString())))
+
+
+                true
+            }
+        }
+
+        val textPref : Preference? = findPreference("text")
+        if(textPref != null) {
+            textPref.setEnabled(false);
+        }
+
 
         initializeThemePreference()
         initializeColorPreference()
+        initializeTextPreference()
 
     }
 
@@ -197,6 +216,40 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 //mainactivity.binding.appBarNavigationDrawer.toolbar.setBackgroundColor(ContextCompat.getColor(mainactivity, R.color.black))
 
                 //activity!!.recreate()
+                return true
+            }
+        }
+
+    }
+
+
+    private fun initializeTextPreference() {
+        val themePreference: Preference? = findPreference("textsize")
+        if (themePreference != null) {
+            themePreference.setOnPreferenceChangeListener(createTextChangeListener())
+        }
+    }
+
+    /**
+     * Creates and returns a listener, which allows to adapt the app's theme, when the value of the
+     * corresponding preference has been changed.
+     *
+     * @return The listener, which has been created, as an instance of the type [ ]
+     */
+    private fun createTextChangeListener(): Preference.OnPreferenceChangeListener? {
+        return object : Preference.OnPreferenceChangeListener {
+            override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
+                Log.e("",newValue.toString())
+
+                var sharedPreferences =
+                    context?.getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE)
+                if (sharedPreferences != null) {
+                    sharedPreferences.edit().putString("textsize", newValue.toString()).commit()
+                };
+
+                val themePreference: Preference? = findPreference("text")
+                //themePreference.title.
+
                 return true
             }
         }

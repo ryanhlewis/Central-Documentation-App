@@ -14,6 +14,7 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import centraldocs.centraldocs.R
 import centraldocs.centraldocs.databinding.FragmentGalleryBinding
 import com.centraldocs.centraldocs.GithubItem
 import com.centraldocs.centraldocs.MainActivity
@@ -51,7 +52,6 @@ private var _binding: FragmentGalleryBinding? = null
 
     _binding = FragmentGalleryBinding.inflate(inflater, container, false)
     val root: View = binding.root
-
 
       textView = binding.textFunctionName
 

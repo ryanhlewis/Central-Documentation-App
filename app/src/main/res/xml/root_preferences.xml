@@ -13,7 +13,8 @@
         <Preference
             app:key="logout"
             app:title="Logout from Github"
-            app:useSimpleSummaryProvider="false" />
+            app:useSimpleSummaryProvider="false"
+            android:icon="@drawable/ic_baseline_exit_to_app_24"/>
 
     </PreferenceCategory>
     <PreferenceCategory app:title="Display">
@@ -34,10 +35,28 @@
             android:title="Change app theme"
             android:id="@+id/colorMenu"/>
 
+        <SeekBarPreference
+            app:key="textsize"
+            app:title="Change text size"
+            android:max="12"
+            android:defaultValue="4"
+            />
+
+        <Preference
+            app:key="text"
+            app:title="Peer-edited, open, and understandable documentation for everyone."
+            app:useSimpleSummaryProvider="false"
+            android:icon="@drawable/logo"/>
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Another Settings Category">
+    <PreferenceCategory app:title="We're Open Source!">
+
+        <Preference
+            app:key="Github"
+            app:title="Central Documentation's Github"
+            app:useSimpleSummaryProvider="false"
+            android:icon = "@drawable/github"/>
 
     </PreferenceCategory>
 
