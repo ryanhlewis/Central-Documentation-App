@@ -10,7 +10,6 @@ import centraldocs.centraldocs.R
 import com.centraldocs.centraldocs.MainActivity
 import com.centraldocs.centraldocs.fragments.LanguageFragment
 import com.centraldocs.centraldocs.model.Topic
-import com.centraldocs.centraldocs.ui.home.HomeFragment
 
 class ItemAdapter(private val context: LanguageFragment,
                   private val dataset: List<Topic>, private val activity: MainActivity): RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {

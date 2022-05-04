@@ -1,25 +1,21 @@
-package com.centraldocs.centraldocs.ui.home
+package com.centraldocs.centraldocs.ui.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModelProvider
 import centraldocs.centraldocs.R
 import centraldocs.centraldocs.databinding.FragmentHomeBinding
-import com.centraldocs.centraldocs.adapter.ItemAdapter
-import com.centraldocs.centraldocs.data.Datasource
 import com.centraldocs.centraldocs.fragments.ContributeFragment
 import com.centraldocs.centraldocs.fragments.LanguageFragment
 import com.centraldocs.centraldocs.fragments.ReviewFragment
-import com.centraldocs.centraldocs.ui.login.InitialFragment
+import com.centraldocs.centraldocs.ui.home.HomeViewModel
 
 class HomeFragment : Fragment() {
 
@@ -74,18 +70,13 @@ private var _binding: FragmentHomeBinding? = null
     val image = itemView.findViewById<ImageView>(R.id.imageView)
     image?.setOnClickListener {
       childFragmentManager.commit{
-        /*
-        setCustomAnimations(
-          @AnimatorRes enterTransition =  R.anim.slide_in,
-          @AnimatorRes R.anim.slide
-        )
-
-         */
         replace<InitialFragment>(R.id.fragmentContainerView)
         setReorderingAllowed(true)
         addToBackStack("name")
       }
     }
+
+
   }
 
     override fun onDestroyView() {
@@ -93,3 +84,11 @@ private var _binding: FragmentHomeBinding? = null
         _binding = null
     }
 }
+
+/*
+setCustomAnimations(
+  @AnimatorRes enterTransition =  R.anim.slide_in,
+  @AnimatorRes R.anim.slide
+)
+
+ */

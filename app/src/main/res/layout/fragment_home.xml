@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.centraldocs.centraldocs.ui.home.HomeFragment">
+    tools:context="com.centraldocs.centraldocs.ui.login.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -85,6 +85,7 @@
             android:text="@string/review" />
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,7 +97,11 @@
             android:layout_height="match_parent"
             android:name="com.centraldocs.centraldocs.ui.login.InitialFragment"
             tools:layout="@layout/fragment_initial" />
+
+
     </LinearLayout>
+
+
 </LinearLayout>
 
 

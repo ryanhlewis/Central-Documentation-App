@@ -1,26 +1,18 @@
 package com.centraldocs.centraldocs.adapter
 
-import android.content.Context
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import centraldocs.centraldocs.R
 import com.centraldocs.centraldocs.GithubItem
 import com.centraldocs.centraldocs.MainActivity
 import com.centraldocs.centraldocs.fragments.LanguageFragment
 import com.centraldocs.centraldocs.model.Subtopic
-import com.centraldocs.centraldocs.model.Topic
-import com.centraldocs.centraldocs.ui.home.HomeFragment
-import com.google.android.material.internal.ContextUtils.getActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
-import java.security.AccessController.getContext
 
 class SubAdapter(private val context: LanguageFragment,
                  private val dataset: List<Subtopic>, private val activity: MainActivity): RecyclerView.Adapter<SubAdapter.SubItemViewHolder>(){
