@@ -19,5 +19,5 @@ as well as maintain the original license in your derivative work.
 
 Install the open-source Android app from Github or Google Play to start reading and writing peer-reviewed code documentation.
 
-[![google-play-badge](https://user-images.githubusercontent.com/76540311/164878608-958bb26b-74f1-44a5-a4e1-aa7d26e5cb1d.png)](https://google.com)
+[![google-play-badge](https://user-images.githubusercontent.com/76540311/164878608-958bb26b-74f1-44a5-a4e1-aa7d26e5cb1d.png)](https://play.google.com/store/apps/details?id=com.centraldocs.centraldocs)
 [![githubgeton](https://user-images.githubusercontent.com/76540311/164878623-35ab5d87-9641-4971-9607-fe523c0a8b2b.png)](https://github.com/ryanhlewis/Central-Documentation-App)
