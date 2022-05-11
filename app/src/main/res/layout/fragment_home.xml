@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.centraldocs.centraldocs.ui.home.HomeFragment">
 
-
+<!--
     <TextView
         android:id="@+id/textView5"
         android:layout_width="285dp"
@@ -47,20 +47,21 @@
         app:layout_constraintEnd_toStartOf="@+id/textView4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+        -->
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="391dp"
-        android:layout_height="586dp"
-        android:layout_marginStart="9dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginBottom="9dp"
-        android:text="TextView"
+        android:id="@+id/howto"
+        android:layout_width="381dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -75,12 +75,11 @@ private var _binding: FragmentGalleryBinding? = null
       arguments?.getString("md")?.let {
 
           // set markdown
-          markwon.setMarkdown(textView, it)
+          markwon.setMarkdown(textView, it + "\n \n \n \u200B")
 
           // set markdown on edited text
           val editable: Editable = SpannableStringBuilder(it)
           binding.editText.text =  editable
-
           originalText = it
 
       }

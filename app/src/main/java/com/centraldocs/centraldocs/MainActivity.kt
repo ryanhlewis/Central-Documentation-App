@@ -255,7 +255,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    var menuID = 0
+    // WARNING- Highly dependent on the number of ignored files in the directory--
+    // Need to fix..
+    var menuID = -1
 
     fun recursiveMakeMenu(it : Container, spacing : String) {
 

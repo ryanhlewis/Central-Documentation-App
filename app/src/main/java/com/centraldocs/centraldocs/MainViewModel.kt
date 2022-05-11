@@ -466,6 +466,49 @@ class MainViewModel : ViewModel() {
 
     }
 
+
+    suspend fun getSuperRawTextInitial(url: String) : String? {
+        val result: BlockingQueue<String?> = getSuperRawText(url)
+        val items = result.take() // this will block your thread
+
+        return items
+    }
+
+    suspend fun getSuperRawText(url : String) : BlockingQueue<String?>  {
+
+        val blockingQueue: BlockingQueue<String?> = ArrayBlockingQueue(1)
+
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .baseUrl("https://raw.githubusercontent.com/")
+            .build()
+
+        var retrofitAPI = retrofit.create(GithubAPI::class.java)
+
+        var call = retrofitAPI.getStringResponse(url)
+
+        if (call != null) {
+            call.enqueue( object: Callback<String?> {
+                override fun onFailure(call: Call<String?>, t: Throwable) {
+                    //handle error here
+                    Log.e("TAG", "onFailure: $t")
+                }
+
+                override fun onResponse(call: Call<String?>?, response: Response<String?>) {
+                    if (response.isSuccessful) {
+                        val responseString = response.body()
+
+                        blockingQueue.add (responseString)
+
+                    }
+                }
+
+            })
+        }
+        return blockingQueue
+    }
+
+
     fun getSavedToken(): String? {
         val ACCESSTOKEN : String? = sharedPreferences.getString("access_token","null")
         return ACCESSTOKEN
@@ -1204,7 +1247,7 @@ class MainViewModel : ViewModel() {
 
 
         var call : Call<ResponseBody>
-        if(ACCESSTOKEN != null)
+        if(ACCESSTOKEN != null && !ACCESSTOKEN.equals("") && !ACCESSTOKEN.equals("null"))
             call = retrofitAPI.getRecursiveDir("token " + ACCESSTOKEN)
         else
             call = retrofitAPI.getRecursiveDirNoAuth()
