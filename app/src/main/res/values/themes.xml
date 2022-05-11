@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
 
     </style>
+
     <style name="Theme.centraldocs.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -22,6 +23,10 @@
         parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.centraldocs.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="ToolbarColoredBackArrow" parent="Theme.AppCompat.Light">
+        <item name="android:textColorSecondary">@color/black</item>
+    </style>
 
 
     <style name="FontSize6">

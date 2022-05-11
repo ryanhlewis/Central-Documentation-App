@@ -26,10 +26,10 @@
             android:title="Dark Mode" />
         -->
 
-        <ListPreference app:defaultValue="Light" app:entries="@array/themes_array" app:entryValues="@array/themes_array" app:key="theme_color" app:title="Theme" app:useSimpleSummaryProvider="true"/>
+        <ListPreference app:defaultValue="System Default" app:entries="@array/themes_array" app:entryValues="@array/themes_array" app:key="theme_color" app:title="Theme" app:useSimpleSummaryProvider="true"/>
 
         <com.jaredrummler.android.colorpicker.ColorPreferenceCompat
-            android:defaultValue="@color/black"
+            android:defaultValue="@color/teal_200"
             android:key="changecolor"
             android:summary="Changes the color of all menus"
             android:title="Change app theme"

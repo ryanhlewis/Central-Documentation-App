@@ -1,25 +1,22 @@
 package com.centraldocs.centraldocs
 
-import android.content.Intent
+import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
-import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -33,35 +30,14 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import centraldocs.centraldocs.R
 import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
-import com.centraldocs.centraldocs.ui.gallery.GalleryViewModel
 import com.google.android.material.navigation.NavigationView
-import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import kotlinx.parcelize.Parcelize
-import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
-import okio.IOException
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
-import java.io.InputStream
-import java.lang.reflect.Type
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.BlockingQueue
-import android.app.Activity
-import android.content.Context
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -94,12 +70,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
         instance = this
 
          binding = ActivityNavigationDrawerBinding.inflate(layoutInflater)
          setContentView(binding.root)
-
-
 
 
         setSupportActionBar(binding.appBarNavigationDrawer.toolbar)
@@ -170,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         // and the tree.
         mainViewModel.getItems().observe(this, Observer {
             // Update the UI
-            Log.e("","Woah, detected entity!")
+            Log.e("","Woah, detected items!")
 
             Log.e("", it.toString())
 
@@ -187,9 +162,91 @@ class MainActivity : AppCompatActivity() {
             Log.e("", "Not logged in, grabbed login info.")
         }
 
+        var sharedPreferences =
+            getSharedPreferences("MyPrefs", AppCompatActivity.MODE_PRIVATE)
+
+        var colorNum = sharedPreferences?.getInt("color_color",-13981796)
+
+        var chosenColor = colorNum as Int
+
+        binding.appBarNavigationDrawer.toolbar.setBackgroundColor(chosenColor)
+        binding.navView.getHeaderView(0).setBackgroundColor(chosenColor)
+        getWindow().setStatusBarColor(chosenColor);
+
+        //binding.drawerLayout.setStatusBarBackgroundColor(chosenColor)
+        GlobalScope.launch {
+            delay(500)
+            try {
+                if (isColorDark(colorNum as Int)) {
+                    binding.appBarNavigationDrawer.toolbar.setTitleTextColor(
+                        ContextCompat.getColor(this@MainActivity, R.color.white)
+                    )
+                    binding.root.findViewById<TextView>(R.id.textViewww)
+                        .setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
+                    binding.root.findViewById<TextView>(R.id.textVieww)
+                        .setTextColor(ContextCompat.getColor(this@MainActivity, R.color.white))
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(binding.appBarNavigationDrawer.toolbar.get(0).findViewById<ImageButton>(R.id.sendButton).drawable),
+                        ContextCompat.getColor(this@MainActivity, R.color.white)
+                    );
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(binding.appBarNavigationDrawer.toolbar.get(1).findViewById<ImageButton>(R.id.editButton).drawable),
+                        ContextCompat.getColor(this@MainActivity, R.color.white)
+                    );
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(binding.appBarNavigationDrawer.toolbar.get(2).findViewById<ImageButton>(R.id.viewButton).drawable),
+                        ContextCompat.getColor(this@MainActivity, R.color.white)
+                    );
+                    binding.appBarNavigationDrawer.toolbar.getNavigationIcon()
+                        ?.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                } else {
+
+                    binding.appBarNavigationDrawer.toolbar.setTitleTextColor(
+                        ContextCompat.getColor(this@MainActivity, R.color.black)
+                    )
+                    binding.root.findViewById<TextView>(R.id.textViewww)
+                        .setTextColor(ContextCompat.getColor(this@MainActivity, R.color.black))
+                    binding.root.findViewById<TextView>(R.id.textVieww)
+                        .setTextColor(ContextCompat.getColor(this@MainActivity, R.color.black))
+
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(binding.appBarNavigationDrawer.toolbar.get(0).findViewById<ImageButton>(R.id.sendButton).drawable),
+                        ContextCompat.getColor(this@MainActivity, R.color.black)
+                    );
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(binding.appBarNavigationDrawer.toolbar.get(1).findViewById<ImageButton>(R.id.editButton).drawable),
+                        ContextCompat.getColor(this@MainActivity, R.color.black)
+                    );
+                    DrawableCompat.setTint(
+                        DrawableCompat.wrap(binding.appBarNavigationDrawer.toolbar.get(2).findViewById<ImageButton>(R.id.viewButton).drawable),
+                        ContextCompat.getColor(this@MainActivity, R.color.black)
+                    );
+                    binding.appBarNavigationDrawer.toolbar.getNavigationIcon()
+                        ?.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+                }
+            }catch (e:Exception){
+                Log.e("", e.toString())
+            }
+        }
+
+        //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+
 
 
     }
+
+    //https://stackoverflow.com/questions/24260853/check-if-color-is-dark-or-light-in-android
+    fun isColorDark(color: Int): Boolean {
+        val darkness: Double =
+            1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
+        return if (darkness < 0.3) {
+            false // It's a light color
+        } else {
+            true // It's a dark color
+        }
+    }
+
 
     fun hideSoftKeyboard() {
         this.currentFocus?.let { view ->
@@ -311,6 +368,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.navigation_drawer, menu)
+       // menuInflater.inflate(R.menu.nav_drawer, menu)
 
         // Menu has been created. Do any menu modifications--
         if(mainViewModel.getSavedToken() == "null")
@@ -481,6 +539,23 @@ interface GithubAPI {
         @Header("Authorization") token: String,
         @Body body: JsonObject,
         @Path(value = "user", encoded = true) user: String
+    ): Call<ResponseBody>
+
+    @POST("/graphql")
+    fun graphQL(
+        @Header("Authorization") token: String,
+        @Body body: JsonObject
+    ): Call<ResponseBody>
+
+    @GET("/repos/ryanhlewis/Central-Documentation/git/trees/main?recursive=1")
+    @Headers("Accept: application/vnd.github.v3+json")
+    fun getRecursiveDir(
+        @Header("Authorization") token: String
+    ): Call<ResponseBody>
+
+    @GET("/repos/ryanhlewis/Central-Documentation/git/trees/main?recursive=1")
+    @Headers("Accept: application/vnd.github.v3+json")
+    fun getRecursiveDirNoAuth(
     ): Call<ResponseBody>
 
 

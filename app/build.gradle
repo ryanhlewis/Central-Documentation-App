@@ -49,6 +49,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.7'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
+    implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
+    implementation 'androidx.fragment:fragment:1.4.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Markwon
     final def markwon_version = '4.6.2'

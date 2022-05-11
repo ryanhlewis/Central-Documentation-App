@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
@@ -15,13 +16,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import centraldocs.centraldocs.R
@@ -29,6 +30,7 @@ import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
@@ -48,8 +50,9 @@ import java.net.URL
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.BlockingQueue
 
+
 class Container {
-    lateinit var githubItems : Collection<GithubItem?>
+    lateinit var githubItems : MutableList<GithubItem?>
     var spacing : String = ""
     var conts : MutableList<Container> = mutableListOf()
     override fun toString(): String {
@@ -86,7 +89,6 @@ class MainViewModel : ViewModel() {
         navController = mainactivity.navController
         binding = mainactivity.binding
 
-
         // First, we open the app. We need to check if this is the first open,
         // and if not, check if the user is already logged in to fetch their info.
 
@@ -121,6 +123,7 @@ class MainViewModel : ViewModel() {
             if(getSavedToken() != "null" && getSavedToken() != "") {
                 getSavedToken()?.let { createRetrofit(it) }
                 Log.e("", "Logged in from memory.")
+
             } else {
                 // User is not logged in. If the intent contains login info, pass it.
                     // Create API requests without login---
@@ -135,9 +138,10 @@ class MainViewModel : ViewModel() {
 
                         retrofitAPI = retrofit.create(GithubAPI::class.java)
 
-                        getRecursiveDirectory("", "", "", githubItems)
-
-                        items.postValue(githubItems)
+                        //getRecursiveDirectory("", "", "", githubItems)
+                        var cont = blockRestRecursive("")
+                        items.postValue(cont!!)
+                        //items.postValue(githubItems)
 
                     }
 
@@ -147,6 +151,17 @@ class MainViewModel : ViewModel() {
 
 
 
+    }
+
+    //https://stackoverflow.com/questions/24260853/check-if-color-is-dark-or-light-in-android
+    fun isColorDark(color: Int): Boolean {
+        val darkness: Double =
+            1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
+        return if (darkness < 0.001) {
+            false // It's a light color
+        } else {
+            true // It's a dark color
+        }
     }
 
 
@@ -266,6 +281,8 @@ class MainViewModel : ViewModel() {
                     return
                 }
                 Log.e("", response.raw().toString())
+                Log.e("HEADERS ARE ", response.headers().toString())
+
 
                 val gson = Gson()
 
@@ -290,7 +307,7 @@ class MainViewModel : ViewModel() {
 
         // IMPORTANT - This makes an order of n calls to each directory-
         // which is VERY bad. Github accounts for this by allowing a recursive call
-        // to a tree structure. Future- Revamp to use recursive call.
+        // to a tree structure. Future- Revamp to use recursive call or use GraphQL.
         //https://docs.github.com/en/rest/reference/git#trees
 
         val result: BlockingQueue<Collection<GithubItem?>?> = getRepoInfo(ACCESSTOKEN, urlDirectory)
@@ -304,7 +321,7 @@ class MainViewModel : ViewModel() {
 
                     var cont1 = Container()
                     if (items != null) {
-                        cont.githubItems = items
+                        cont.githubItems = items as MutableList<GithubItem?>
                         cont.spacing = spacing
                         cont.conts.add(cont1)
                     }
@@ -485,8 +502,13 @@ class MainViewModel : ViewModel() {
             getUserInfo(ACCESSTOKEN)
             //getRepoInfo(ACCESSTOKEN, "")
 
-            getRecursiveDirectory(ACCESSTOKEN,"", "", githubItems)
-            items.postValue(githubItems)
+            //getRecursiveDirectory(ACCESSTOKEN,"", "", githubItems)
+            //Log.e("", githubItems.toString())
+            //items.postValue(githubItems)
+
+            // Reduced call count--
+            var cont = blockRestRecursive(ACCESSTOKEN)
+            items.postValue(cont!!)
 
         }
 
@@ -998,6 +1020,308 @@ class MainViewModel : ViewModel() {
         }
 
     }
+
+    class graphQLReq(query : String) {
+        var query: String = query
+    }
+
+    fun getRecursiveDirectoryQL() {
+
+        mainactivity.runOnUiThread {
+
+
+
+            var owner = "ryanhlewis"
+            var name = "Central-Documentation"
+            var json1 : String = "{\n" +
+                    " repository(owner: \"$owner\", name: \"$name\") {\n" +
+                    " object(expression: \"HEAD:\") {\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " ... on Tree {\n" +
+                    " entries {\n" +
+                    " name\n" +
+                    " type\n" +
+                    " object {\n" +
+                    " ... on Blob {\n" +
+                    " byteSize\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    " }\n" +
+                    "}"
+
+
+            var qlreq = graphQLReq(json1)
+
+            val gson = Gson()
+            var json : String = gson.toJson(qlreq, graphQLReq::class.java)
+
+            val jsonParser = JsonParser()
+            val jo = jsonParser.parse(json) as JsonObject
+
+            var call : Call<ResponseBody>
+            if(this::entity.isInitialized)
+            call = retrofitAPI.graphQL("token " + entity.getToken(), jo)
+            else
+                call = retrofitAPI.graphQL("token " + "", jo)
+
+            call.enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    //handle error here
+                    Log.e("TAG", "onFailure: $t")
+                }
+
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    //your raw string response
+                    val stringResponse = response.body()?.string()
+                    Log.e("TAG", "onSuccess " + response.raw())
+
+                    Log.e("TAG", "onSuccess " + stringResponse)
+
+                    // Ref
+                    val gson = Gson()
+                    var repoData =
+                        gson.fromJson(stringResponse, RepoData::class.java)
+
+                    if(repoData != null)
+                    Log.e("", repoData.toString())
+
+
+                }
+            })
+        }
+
+    }
+
+    class RepoData {
+        private val repository: RepoItem? = null
+    }
+
+    class RepoItem {
+        @SerializedName("object") // Get around Github's use of the reserved keyword 'object'
+        private val objectItem: List<RepoItem>? = null
+        private val name: String? = null
+        private val type: String? = null
+        override fun toString(): String {
+            return name + objectItem.toString()
+        }
+    }
+
+
+    fun blockRestRecursive(ACCESSTOKEN: String) : Container? {
+        val result: BlockingQueue<Container?> = getRestRecursive(ACCESSTOKEN)
+        val items = result.take() // this will block your thread
+
+        return items
+    }
+
+    fun getRestRecursive(ACCESSTOKEN: String): BlockingQueue<Container?> {
+
+        val blockingQueue: BlockingQueue<Container?> = ArrayBlockingQueue(1)
+
+        var cont = Container()
+
+
+        var call : Call<ResponseBody>
+        if(ACCESSTOKEN != null)
+            call = retrofitAPI.getRecursiveDir("token " + ACCESSTOKEN)
+        else
+            call = retrofitAPI.getRecursiveDirNoAuth()
+
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                //handle error here
+                Log.e("TAG", "onFailure: $t")
+            }
+
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                //your raw string response
+                val stringResponse = response.body()?.string()
+                Log.e("TAG", "onSuccess " + response.raw())
+
+                Log.e("TAG", "onSuccess " + stringResponse)
+
+                Log.e("HEADERS ARE", response.headers().toString())
+
+
+                // Ref
+                val gson = Gson()
+                var repoData =
+                    gson.fromJson(stringResponse, TreeHolder::class.java)
+
+                if(repoData != null) {
+                    Log.e("", repoData.toString())
+
+                    var currentPath = ""
+                    val dictionary = mutableMapOf("" to cont)
+
+                    // Now, reconstruct appropriate urls, schema--
+                    repoData.tree?.forEach {
+
+                        var item = GithubItem()
+
+                        item.path = it.path.toString()
+
+                        // Fix any awkward Github URLs
+                        item.path = item.path.replace("#","%23")
+
+                        if(it.type.equals("tree")) {
+
+                            item.type = "dir"
+                            item.name = it.path!!.substring(it.path.lastIndexOf("/") + 1)
+
+
+                            currentPath = it.path.toString()
+
+                            dictionary[currentPath] = Container()
+                            dictionary[currentPath]?.githubItems = mutableListOf()
+
+                            //Log.e("current path", "Added " + currentPath + " to " + getUpperDirectory(currentPath))
+                            dictionary[getUpperDirectory(currentPath)]!!.conts.add(dictionary[currentPath]!!)
+                            dictionary[getUpperDirectory(currentPath)]!!.githubItems.add(item)
+
+
+
+                        } else if(it.type.equals("blob")) {
+
+                            item.type = "file"
+                            item.download_url = "https://raw.githubusercontent.com/ryanhlewis/Central-Documentation/main/" +
+                                    item.path
+                            // Heavenly, this line below either returns 0 (-1 + 1) or (etc.md), which is perfect.
+                            item.name = it.path!!.substring(it.path.lastIndexOf("/") + 1)
+                            currentPath = getUpperDirectory(it.path!!)
+
+                            // Padding
+                            dictionary[currentPath]?.conts?.add(Container())
+
+                            //Log.e("current failing path", currentPath)
+                            if(!dictionary[currentPath]?.isReady()!!)
+                                dictionary[currentPath]!!.githubItems = mutableListOf()
+                            dictionary[currentPath]?.githubItems?.add(item)
+
+                        }
+
+                    }
+
+                    Log.e("Dict", dictionary.toString())
+                    Log.e("cont ", cont.toString())
+
+                    blockingQueue.add(cont)
+
+                }
+
+
+
+            }
+        })
+
+        return blockingQueue
+
+    }
+
+    fun getUpperDirectory(path : String) : String {
+        if(!path.contains("/"))
+            return ""
+        return path.substring(0,path.lastIndexOf("/"))
+    }
+
+    class TreeHolder {
+        val tree: List<TreeTemplate>? = null
+    }
+
+    class TreeTemplate {
+        val type: String? = null
+        val path: String? = null
+    }
+
+
+
+
+
 
 
 

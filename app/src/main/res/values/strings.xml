@@ -47,5 +47,7 @@
     <string name="color_palette_preference_dialog_title">example1</string>
     <string name="color_palette_preference_key">example2</string>
     <string name="color_palette_preference_title">example4</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

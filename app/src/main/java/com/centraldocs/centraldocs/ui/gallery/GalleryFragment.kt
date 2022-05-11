@@ -185,6 +185,8 @@ private var _binding: FragmentGalleryBinding? = null
                         originalText, gitItem
                     )
 
+                    //mainactivity.mainViewModel.getRecursiveDirectoryQL()
+                    //mainactivity.mainViewModel.getRestRecursive()
 
                     true
                 }
