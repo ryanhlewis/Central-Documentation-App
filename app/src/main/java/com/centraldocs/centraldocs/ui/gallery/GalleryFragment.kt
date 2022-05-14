@@ -133,6 +133,8 @@ private var _binding: FragmentGalleryBinding? = null
             var mainactivity: MainActivity
             mainactivity = MainActivity.getMainInstance()
 
+            mainactivity.binding.appBarNavigationDrawer.toolbar.setTitle(gitItem.name)
+
             mainactivity.runOnUiThread {
 
                 sendButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(0)
@@ -156,7 +158,7 @@ private var _binding: FragmentGalleryBinding? = null
 
                 viewButton.setOnClickListener {
 
-                    markwon.setMarkdown(textView, binding.editText.text.toString())
+                    markwon.setMarkdown(textView, binding.editText.text.toString() + "\n \n \n \u200B")
                     binding.editText.isVisible = false
                     textView.isVisible = true
                     editButton.isVisible = true
