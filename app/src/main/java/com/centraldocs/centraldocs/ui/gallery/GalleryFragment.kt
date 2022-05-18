@@ -1,21 +1,20 @@
 package com.centraldocs.centraldocs.ui.gallery
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import centraldocs.centraldocs.R
 import centraldocs.centraldocs.databinding.FragmentGalleryBinding
 import com.centraldocs.centraldocs.GithubItem
 import com.centraldocs.centraldocs.MainActivity
@@ -53,6 +52,7 @@ private var _binding: FragmentGalleryBinding? = null
 
     _binding = FragmentGalleryBinding.inflate(inflater, container, false)
     val root: View = binding.root
+
 
       textView = binding.textFunctionName
 
@@ -133,9 +133,49 @@ private var _binding: FragmentGalleryBinding? = null
             var mainactivity: MainActivity
             mainactivity = MainActivity.getMainInstance()
 
-            mainactivity.binding.appBarNavigationDrawer.toolbar.setTitle(gitItem.name)
+
+            var downX = 0f
+            var upX = 0f
+            var downY = 0f
+            var upY = 0f
+            var bool = true
+            binding.scrollViewww.setOnTouchListener(object : OnTouchListener {
+                override fun onTouch(v: View, event: MotionEvent): Boolean {
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            downX = event.x
+                            downY = event.y
+                        }
+                        MotionEvent.ACTION_MOVE -> {
+                            // Since ACTION_DOWN is being swallowed by another view-
+                            if(bool) {
+                                bool = false
+                                downX = event.x
+                                downY = event.y
+                            }
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            upX = event.x
+                            upY = event.y
+                            val deltaX: Float = downX - upX
+                            val deltaY: Float = downY - upY
+                            bool = true
+                            return if (deltaX <= -50 && Math.abs(deltaY) < 200) {
+                                mainactivity.binding.drawerLayout.open()
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                    }
+                    return false
+                }
+            })
+
 
             mainactivity.runOnUiThread {
+
+                mainactivity.binding.appBarNavigationDrawer.toolbar.setTitle(gitItem.name)
 
                 sendButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(0)
                 editButton = mainactivity.binding.appBarNavigationDrawer.toolbar.get(1)

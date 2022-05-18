@@ -74,6 +74,8 @@ private var _binding: FragmentLoginBinding? = null
                 mainactivity = (activity as MainActivity?)!!
                 mainactivity.binding.appBarNavigationDrawer.toolbar.isVisible = true
 
+                mainactivity.mainViewModel.noAuthGetRepos()
+
 
             }
         }
@@ -101,7 +103,7 @@ private var _binding: FragmentLoginBinding? = null
             .appendPath("authorize")
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("redirect_uri", redirectUrl)
-            .appendQueryParameter("scope", "repo")
+            .appendQueryParameter("scope", "public_repo") // usually "repo"
             .appendQueryParameter("state", appId)
             .build()
 

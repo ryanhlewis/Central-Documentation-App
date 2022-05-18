@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -199,6 +200,9 @@ class MainActivity : AppCompatActivity() {
                     );
                     binding.appBarNavigationDrawer.toolbar.getNavigationIcon()
                         ?.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+                    // Updates the drawable on the login page, but not on the menu-- strange.
+                    //binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.imageVieww).drawable.setTint(-1)
+
                 } else {
 
                     binding.appBarNavigationDrawer.toolbar.setTitleTextColor(
@@ -223,11 +227,14 @@ class MainActivity : AppCompatActivity() {
                     );
                     binding.appBarNavigationDrawer.toolbar.getNavigationIcon()
                         ?.setColorFilter(Color.BLACK, PorterDuff.Mode.MULTIPLY);
+                    //binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.imageVieww).drawable.setTintList(null)
+
                 }
             }catch (e:Exception){
                 Log.e("", e.toString())
             }
         }
+
 
         //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);

@@ -48,7 +48,6 @@ private var _binding: FragmentHomeBinding? = null
       .build()
 
 
-
     /* THIS IS FOR THE RECYCLER VIEW; DIDN'T KNOW WHERE TO PUT IT */
    /* val myDataset = Datasource().loadTopics()
     val recyclerView = binding.recycler
@@ -73,6 +72,49 @@ private var _binding: FragmentHomeBinding? = null
     // Send the network request
     var mainactivity: MainActivity
     mainactivity = MainActivity.getMainInstance()
+
+    var downX = 0f
+    var upX = 0f
+    var downY = 0f
+    var upY = 0f
+    var bool = true
+    binding.scrollViewwww.setOnTouchListener(object : View.OnTouchListener {
+      override fun onTouch(v: View, event: MotionEvent): Boolean {
+        when (event.action) {
+          MotionEvent.ACTION_DOWN -> {
+            downX = event.x
+            downY = event.y
+          }
+          MotionEvent.ACTION_MOVE -> {
+            // Since ACTION_DOWN is being swallowed by another view-
+            if(bool) {
+              bool = false
+              downX = event.x
+              downY = event.y
+            }
+          }
+          MotionEvent.ACTION_UP -> {
+            upX = event.x
+            upY = event.y
+            val deltaX: Float = downX - upX
+            val deltaY: Float = downY - upY
+            Log.e("","swiped up"  + downY.toString() + ' ' + upY.toString())
+            Log.e("","swiped up"  + deltaY.toString())
+            Log.e("","swiped left"  + deltaX.toString())
+            bool = true
+            return if (deltaX <= -50 && Math.abs(deltaY) < 200) {
+              mainactivity.binding.drawerLayout.open()
+              true
+            } else {
+              false
+            }
+          }
+        }
+        return false
+      }
+    })
+
+
     var hey = binding.howto
     GlobalScope.launch {
       var words = mainactivity.mainViewModel.getSuperRawTextInitial("https://raw.githubusercontent.com/ryanhlewis/Central-Documentation/main/.howto.md")

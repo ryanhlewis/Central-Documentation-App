@@ -2,6 +2,7 @@ package com.centraldocs.centraldocs
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -25,6 +27,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.preference.Preference
 import centraldocs.centraldocs.R
 import centraldocs.centraldocs.databinding.ActivityNavigationDrawerBinding
 import com.google.gson.Gson
@@ -125,25 +128,9 @@ class MainViewModel : ViewModel() {
                 Log.e("", "Logged in from memory.")
 
             } else {
-                // User is not logged in. If the intent contains login info, pass it.
+                    // User is not logged in. If the intent contains login info, pass it.
                     // Create API requests without login---
-                    GlobalScope.launch {
-
-
-                        retrofit = Retrofit.Builder()
-                            .baseUrl("https://api.github.com/") // as we are sending data in json format so
-                            .addConverterFactory(GsonConverterFactory.create()) // at last we are building our retrofit builder.
-                            //.client(httpClient)
-                            .build()
-
-                        retrofitAPI = retrofit.create(GithubAPI::class.java)
-
-                        //getRecursiveDirectory("", "", "", githubItems)
-                        var cont = blockRestRecursive("")
-                        items.postValue(cont!!)
-                        //items.postValue(githubItems)
-
-                    }
+                    noAuthGetRepos()
 
             }
 
@@ -151,6 +138,24 @@ class MainViewModel : ViewModel() {
 
 
 
+    }
+
+    fun noAuthGetRepos() {
+        GlobalScope.launch {
+
+            retrofit = Retrofit.Builder()
+                .baseUrl("https://api.github.com/") // as we are sending data in json format so
+                .addConverterFactory(GsonConverterFactory.create()) // at last we are building our retrofit builder.
+                .build()
+
+            retrofitAPI = retrofit.create(GithubAPI::class.java)
+
+            if(binding.navView.menu.size() < 5) {
+                var cont = blockRestRecursive("")
+                items.postValue(cont!!)
+            }
+
+        }
     }
 
     //https://stackoverflow.com/questions/24260853/check-if-color-is-dark-or-light-in-android
@@ -550,8 +555,11 @@ class MainViewModel : ViewModel() {
             //items.postValue(githubItems)
 
             // Reduced call count--
-            var cont = blockRestRecursive(ACCESSTOKEN)
-            items.postValue(cont!!)
+            // Ensure the menu hasnt already been fetched-
+            if(mainactivity.binding.navView.menu.size() < 5) {
+                var cont = blockRestRecursive(ACCESSTOKEN)
+                items.postValue(cont!!)
+            }
 
         }
 
@@ -697,6 +705,10 @@ class MainViewModel : ViewModel() {
             ).show()
             Log.e("", "Uploaded changes.")
         }
+
+        // Change any strange URL schemas.
+        // Note that putting any new words here causes the file to be created automagically.
+        gitItem.path = gitItem.path.replace("%23","#")
 
 
         // Check if user has fork-

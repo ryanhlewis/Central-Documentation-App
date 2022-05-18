@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen         android:id="@+id/prefScreen"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -39,7 +40,7 @@
             app:key="textsize"
             app:title="Change text size"
             android:max="12"
-            android:defaultValue="6"
+            android:defaultValue="10"
             />
 
         <Preference
@@ -53,10 +54,11 @@
     <PreferenceCategory app:title="We're Open Source!">
 
         <Preference
+            android:id="@+id/githubPref"
+            android:icon="@drawable/r__11_"
             app:key="Github"
             app:title="Central Documentation's Github"
-            app:useSimpleSummaryProvider="false"
-            android:icon = "@drawable/github"/>
+            app:useSimpleSummaryProvider="false" />
 
     </PreferenceCategory>
 

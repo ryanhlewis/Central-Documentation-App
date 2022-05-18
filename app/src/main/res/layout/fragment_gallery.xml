@@ -8,6 +8,7 @@
     tools:context="com.centraldocs.centraldocs.ui.gallery.GalleryFragment" >
 
     <ScrollView
+        android:id="@+id/scrollViewww"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -1,35 +1,33 @@
 package com.centraldocs.centraldocs
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.view.forEach
 import androidx.core.view.get
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceScreen
+import androidx.recyclerview.widget.RecyclerView
 import centraldocs.centraldocs.R
-import com.jaredrummler.android.colorpicker.ColorPickerView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
+    lateinit var githubPref: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -81,8 +79,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
                     // Attempted logout using Github API,
                     // almost always fails.
-                    var mainactivity : MainActivity
-                    mainactivity = (activity as MainActivity?)!!
+                    //var mainactivity : MainActivity
+                    //mainactivity = (activity as MainActivity?)!!
                     //mainactivity.mainViewModel.logOut()
 
                     // Patched logout, simply deletes token, restarts app.
@@ -98,7 +96,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         }
 
-        val githubPref: Preference? = findPreference("Github")
+        githubPref = findPreference("Github")!!
         if (githubPref != null) {
             githubPref.setOnPreferenceClickListener {
 
@@ -107,6 +105,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 
                 true
+            }
+            when (context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    githubPref.icon?.setTint(-1)
+                }
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    githubPref.icon?.setTintList(null)
+                }
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
             }
         }
 
@@ -120,6 +127,64 @@ class SettingsFragment : PreferenceFragmentCompat() {
         initializeColorPreference()
         initializeTextPreference()
 
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //Disable scrollbar
+        val listView = view.findViewById<View>(androidx.preference.R.id.recycler_view) as RecyclerView?
+        if (listView != null) {
+
+
+
+            var mainactivity: MainActivity
+            mainactivity = MainActivity.getMainInstance()
+
+
+            var downX = 0f
+            var upX = 0f
+            var downY = 0f
+            var upY = 0f
+            var bool = true
+            listView.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View, event: MotionEvent): Boolean {
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            downX = event.x
+                            downY = event.y
+                        }
+                        MotionEvent.ACTION_MOVE -> {
+                            // Since ACTION_DOWN is being swallowed by another view-
+                            if(bool) {
+                                bool = false
+                                downX = event.x
+                                downY = event.y
+                            }
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            upX = event.x
+                            upY = event.y
+                            val deltaX: Float = downX - upX
+                            val deltaY: Float = downY - upY
+                            bool = true
+                            return if (deltaX <= -50 && Math.abs(deltaY) < 200) {
+                                mainactivity.binding.drawerLayout.open()
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                    }
+                    return false
+                }
+            })
+
+
+
+
+
+        }
     }
 
     /*
@@ -166,7 +231,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     darkModeValues[2] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 }
 
-
                 activity!!.recreate()
 
                 return true
@@ -183,6 +247,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             false // It's a light color
         } else {
             true // It's a dark color
+        }
+    }
+    fun isColorSuperDark(color: Int): Boolean {
+        val darkness: Double =
+            1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
+        return if (darkness < 0.9) {
+            false // It's a light color
+        } else {
+            true // It's a super dark color
         }
     }
 
